@@ -9,5 +9,5 @@ $ rosrun living_lab_robot_moveit_client moveit_client_node_obstacle_avoidance.py
  - rostopic pub -1 /del_obstacle std_msgs/String "data: '0'"</br>
  - - ㄴ> remove box.
 
-#####넣어야 할 기능
+##### 넣어야 할 기능
  - 로봇이 움직이기 전에 미리 박스를 remove하고, 다 움직이고 나서 팔을 움직일때 팔을 움직이기 전에 미리 박스를 add 할 것.
