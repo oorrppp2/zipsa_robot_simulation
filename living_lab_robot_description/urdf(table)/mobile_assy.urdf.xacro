@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <link name="base_footprint"/>
+    <link name="base_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/mobile_assy.dae" scale="1 1 1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/mobile_assy.dae" scale="1 1 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0.1111" rpy="0 0 0"/>
+            <mass value="55.0"/>
+            <inertia ixx="1.700489" ixy="0.0" ixz="0.0" iyy="1.700489" iyz="0.0" izz="2.604803"/>
+        </inertial>
+    </link>
+
+    <joint name="base_link_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0.0635" rpy="0 0 0"/>
+    </joint>
+
+    <link name="front_hokuyo_link">
+        <!-- <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+        </inertial> -->
+    </link>
+    <xacro:insert_hokuyo_sensor name="front" />
+
+    <joint name="front_hokuyo_mount_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="front_hokuyo_link"/>
+        <origin xyz="0.27 0 0.165" rpy="0 0 0"/>
+    </joint>
+
+    <link name="rear_hokuyo_link">
+        <!-- <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+        </inertial> -->
+    </link>
+    <xacro:insert_hokuyo_sensor name="rear" />
+
+    <joint name="rear_hokuyo_mount_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="rear_hokuyo_link"/>
+        <origin xyz="-0.27 0 0.165" rpy="0 0 ${pi}"/>
+    </joint>
+
+    <link name="omni_wheel_1">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/omni_wheel.dae" scale="1 1 1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.065"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 -0.0015 0" rpy="0 0 0"/>
+            <mass value="0.42"/>
+            <inertia ixx="0.000562" ixy="0.0" ixz="0.0" iyy="0.000884" iyz="0.0" izz="0.000562"/>
+        </inertial>
+    </link>
+
+    <joint name="omni_wheel_1_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="omni_wheel_1"/>
+        <origin xyz="${0.282 * cos(pi/3)}  ${0.282 * sin(pi/3)} 0" rpy="0 0 ${-pi/6}"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <xacro:insert_velocity_transmission name="omni_wheel_1_joint" />
+
+    <link name="omni_wheel_3">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/omni_wheel.dae" scale="1 1 1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.065"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 -0.0015 0" rpy="0 0 0"/>
+            <mass value="0.42"/>
+            <inertia ixx="0.000562" ixy="0.0" ixz="0.0" iyy="0.000884" iyz="0.0" izz="0.000562"/>
+        </inertial>
+    </link>
+
+    <joint name="omni_wheel_3_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="omni_wheel_3"/>
+        <origin xyz="${0.282 * cos(pi/3)}  ${0.282 * sin(-pi/3)} 0" rpy="0 0 ${-5*pi/6}"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <xacro:insert_velocity_transmission name="omni_wheel_3_joint" />
+
+    <link name="omni_wheel_2">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/omni_wheel.dae" scale="1 1 1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.065"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 -0.0015 0" rpy="0 0 0"/>
+            <mass value="0.42"/>
+            <inertia ixx="0.000562" ixy="0.0" ixz="0.0" iyy="0.000884" iyz="0.0" izz="0.000562"/>
+        </inertial>
+    </link>
+
+    <joint name="omni_wheel_2_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="omni_wheel_2"/>
+        <origin xyz="-0.282 0 0" rpy="0 0 ${pi/2}"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <xacro:insert_velocity_transmission name="omni_wheel_2_joint" />
+</robot>
