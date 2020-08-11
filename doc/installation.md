@@ -33,7 +33,7 @@ It has only one way at this time (build from source in Catkin workspace) to inst
     $ cd $HOME/catkin_ws/src
     $ rosdep install --from-paths . --ignore-src -r -y
     $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r
-    $ sudo apt-get install python3 python-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev libxml2-dev zlib1g-dev libblas-dev libatlas-base-dev
+    $ sudo apt-get install python3 python-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev libxml2-dev zlib1g-dev libblas-dev libatlas-base-dev ros-melodic-moveit-commander ros-kinetic-trac-ik-kinematics-plugin ros-kinetic-gazebo*
     $ sudo apt-get install ros-melodic-trac-ik-kinematics-plugin
     $ sudo apt install ros-melodic-gazebo*
     $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r
