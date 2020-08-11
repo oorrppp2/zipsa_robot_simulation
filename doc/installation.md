@@ -37,6 +37,11 @@ It has only one way at this time (build from source in Catkin workspace) to inst
     $ sudo apt-get install ros-melodic-trac-ik-kinematics-plugin
     $ sudo apt install ros-melodic-gazebo*
     $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r
+    
+    $ cd $HOME/catkin_ws/src
+    $ git clone https://github.com/byeongkyu/gazebo_mimic_joint_plugin.git
+    $ rosdep install --from-paths . --ignore-src -r -y
+    $ git clone https://github.com/byeongkyu/robotis_gripper.git
 
 
 
