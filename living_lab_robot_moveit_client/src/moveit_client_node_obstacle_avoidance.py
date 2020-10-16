@@ -44,8 +44,7 @@ class MoveitClientNode:
 
 		self.sub_add_obstacle = rospy.Subscriber('/add_obstacle', String, self.add_obstacle)
 		self.sub_del_obstacle = rospy.Subscriber('/del_obstacle', String, self.del_obstacle)
-		self.sub_attach_obstacle = rospy.Subscriber('/attach_obstacle', String, self.attach_obstacle)
-		self.sub_detach_obstacle = rospy.Subscriber('/detach_obstacle', String, self.detach_obstacle)
+		self.sub_del_all_obstacles = rospy.Subscriber('/del_all_obstacles', String, self.del_all_obstacles)
 
 		self.action_plan_execute_pose = actionlib.SimpleActionServer('/plan_and_execute_pose', PlanExecutePoseAction, execute_cb=self.plan_execute_pose_cb, auto_start = False)
 		self.action_plan_execute_pose.start()
@@ -57,71 +56,39 @@ class MoveitClientNode:
 		self.action_plan_execute_pose_w_constraints.start()
 		rospy.loginfo('%s ready...'%rospy.get_name())
 
-		self.box_name = ""
+		self.box_names_arr = []
 		self.box_pose = geometry_msgs.msg.PoseStamped()
 
-#	attached_objects = self.scene.get_attached_objects([box_name])
-
-#	eef_link = self.group.get_end_effector_link()
-#	grasping_group = 'arm'
-#	touch_links = self.robot.get_link_names(group=grasping_group)
-#	self.scene.attach_box(eef_link, box_name, touch_links=touch_links)
-
-#	print("Attached object : " + str(attached_objects.keys()))
-#	print("Attached objects")
-#	for names in self.scene.get_known_object_names():
-#		print(" - " + names)
 	def add_obstacle(self, msg):
-		#    box_pose.header.frame_id = "end_effector"
+# received_data = [position x, position y, position z, box_name, size_x, size_y, size_z]
+		received_data = msg.data.split()
 		self.box_pose.header.frame_id = "map"
-#		self.box_pose.header.frame_id = "base_footprint"
+
 		self.box_pose.pose.orientation.w = 1.0
-#		self.box_pose.pose.position.x = 0.9 # slightly above the end effector
-#		self.box_pose.pose.position.y = 0.0 # slightly above the end effector
-#		self.box_pose.pose.position.z = 0.385 # slightly above the end effector
-#		box_name = "table"
-#		self.scene.add_box(box_name, self.box_pose, size=(0.45, 1.23, 0.77))
-		self.box_pose.pose.position.x = 2.8 # slightly above the end effector
-		self.box_pose.pose.position.y = -2.0 # slightly above the end effector
-		self.box_pose.pose.position.z = 0.45 # slightly above the end effector
-#		self.box_pose.pose.position.x = 0.7 # slightly above the end effector
-#		self.box_pose.pose.position.y = 0.0 # slightly above the end effector
-#		self.box_pose.pose.position.z = 0.35 # slightly above the end effector
-#		self.box_pose.pose.position.x = -1.0 # slightly above the end effector
-#		self.box_pose.pose.position.y = -2.0 # slightly above the end effector
-#		self.box_pose.pose.position.z = 0.35 # slightly above the end effector
-		box_name = "table"
-		self.scene.add_box(box_name, self.box_pose, size=(1.05, 1.75, 0.95))
-#		self.scene.add_box(box_name, self.box_pose, size=(1.0, 1.7, 0.7))
-		self.box_name = box_name
+		self.box_pose.pose.position.x = float(received_data[0])
+		self.box_pose.pose.position.y = float(received_data[1])
+		self.box_pose.pose.position.z = float(received_data[2])
+		box_name = received_data[3]
+		self.scene.add_box(box_name, self.box_pose, size=(float(received_data[4]), float(received_data[5]), float(received_data[6])))
+
+		self.box_names_arr.append(box_name)
 
 		start = rospy.get_time()
 		seconds = rospy.get_time()
 		is_known = False
-		print("Add box result : " + str(self.wait_for_state_update(box_is_known=True, timeout=4)))
-		
-	def attach_obstacle(self, msg):
-		box_name = self.box_name
-		robot = self.robot
-		scene = self.scene
-#		group_names = self.group_names
-
-		grasping_group = 'arm'
-		#    grasping_group = 'hand'
-		touch_links = robot.get_link_names(group=grasping_group)
-		self.scene.attach_box("map", box_name, touch_links=touch_links)
-		print("Attach box result : " + str(self.wait_for_state_update(box_is_attached=True, box_is_known=False, timeout=4)))
+		print("Add box result : " + str(self.wait_for_state_update(box_is_known=True, timeout=4, box_name=box_name)))
 
 	def del_obstacle(self, msg):
-		self.scene.remove_world_object(self.box_name)
-		print("Remove box result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=4)))
+		self.scene.remove_world_object(msg.data)
+		print("Remove" + str(msg.data) + "  result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=4, box_name=msg.data)))
 
-	def detach_obstacle(self, msg):
-		box_name = self.box_name
-		scene = self.scene
-		scene.remove_attached_object("map", name=box_name)
-		# We wait for the planning scene to update.
-		print("Detach box result : " + str(self.wait_for_state_update(box_is_known=True, box_is_attached=False, timeout=4)))
+	def del_all_obstacles(self, msg):
+		print(self.box_names_arr)
+		for i in range(len(self.box_names_arr)):
+			self.scene.remove_world_object(self.box_names_arr[i])
+			print("Remove " + str(self.box_names_arr[i]) + " result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=4, box_name=self.box_names_arr[i])))
+		self.box_names_arr = []
+		
 
 	def plan_execute_pose_cb(self, goal):
 		feedback = PlanExecutePoseFeedback()
@@ -130,6 +97,18 @@ class MoveitClientNode:
 
 		self.group.clear_pose_targets()
 		self.group.set_start_state_to_current_state()
+
+		#include default arm_base_joint // it is bug that moveit does not exclude passive joint in thier joint trajectory.
+		js_base = JointConstraint()
+		js_base.joint_name = "arm_base_joint"
+		js_base.position = 0.0
+		js_base.tolerance_above = 0.001
+		js_base.tolerance_below = 0.001
+		js_base.weight = 1.0
+
+		self.contraints.name = "constraints"
+		self.contraints.joint_constraints.append(js_base)
+		self.group.set_path_constraints(self.contraints)
 
 		try:
 			self.group.set_pose_target(goal.target_pose)
@@ -166,6 +145,18 @@ class MoveitClientNode:
 		self.group.clear_pose_targets()
 		#self.group.set_start_state_to_current_state()
 
+		#include default arm_base_joint // it is bug that moveit does not exclude passive joint in thier joint trajectory.
+		js_base = JointConstraint()
+		js_base.joint_name = "arm_base_joint"
+		js_base.position = 0.0
+		js_base.tolerance_above = 0.001
+		js_base.tolerance_below = 0.001
+		js_base.weight = 1.0
+
+		self.contraints.name = "constraints"
+		self.contraints.joint_constraints.append(js_base)
+		self.group.set_path_constraints(self.contraints)
+
 		try:
 			self.group.set_named_target(goal.target_name)
 		except MoveItCommanderException:
@@ -194,8 +185,16 @@ class MoveitClientNode:
 		result = PlanExecutePoseConstraintsResult()
 		result.result = True
 
+		#include default arm_base_joint // it is bug that moveit does not exclude passive joint in thier joint trajectory.
+		js_base = JointConstraint()
+		js_base.joint_name = "arm_base_joint"
+		js_base.position = 0.0
+		js_base.tolerance_above = 0.001
+		js_base.tolerance_below = 0.001
+		js_base.weight = 1.0
 
 		self.contraints.name = "constraints"
+		self.contraints.joint_constraints.append(js_base)
 		for js in goal.joint_constraints:
 			self.contraints.joint_constraints.append(js)
 		self.group.set_path_constraints(self.contraints)
@@ -233,11 +232,11 @@ class MoveitClientNode:
 		rospy.loginfo('Planning goal pose succeeded.')
 		self.action_plan_execute_pose_w_constraints.set_succeeded(result)
 
-	def wait_for_state_update(self, box_is_known=False, box_is_attached=False, timeout=4):
+	def wait_for_state_update(self, box_is_known=False, box_is_attached=False, timeout=4, box_name=""):
 		# Copy class variables to local variables to make the web tutorials more clear.
 		# In practice, you should use the class variables directly unless you have a good
 		# reason not to.
-		box_name = self.box_name
+#		box_name = self.box_name
 		scene = self.scene
 
 		## BEGIN_SUB_TUTORIAL wait_for_scene_update

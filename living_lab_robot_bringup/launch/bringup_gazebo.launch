@@ -3,4 +3,8 @@
     <include file="$(find living_lab_robot_control)/launch/bringup_gazebo.launch"/>
 
     <include file="$(find living_lab_robot_moveit_config)/launch/move_group_gazebo.launch"/>
+
+    <!-- Topic Throttle for Point Cloud -->
+    <node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/points 2.0 /throttled_depth_registered_points"/>
+
 </launch>

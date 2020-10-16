@@ -20,11 +20,15 @@ def main(argv):
         goal.target_pose.pose.position.y = float(argv[2])
         goal.target_pose.pose.position.z = float(argv[3])
 
-        roll = float(argv[4]) * math.pi / 180.0
-        pitch = float(argv[5]) * math.pi / 180.0
-        yaw = float(argv[6]) * math.pi / 180.0
+#        roll = float(argv[4]) * math.pi / 180.0
+#        pitch = float(argv[5]) * math.pi / 180.0
+#        yaw = float(argv[6]) * math.pi / 180.0
 
-        quat = quaternion_from_euler(roll, pitch, yaw)
+        theta = math.atan2(goal.target_pose.pose.position.y, goal.target_pose.pose.position.x)
+
+            
+#        quat = quaternion_from_euler(roll, pitch, yaw)
+        quat = quaternion_from_euler(0.0, 0.0, theta)
         print quat
 
         goal.target_pose.pose.orientation.x = quat[0]
@@ -58,9 +62,5 @@ def main(argv):
 
 if __name__ == '__main__':
     rospy.init_node('test_pose', anonymous=False)
-
-    if len(sys.argv) != 12:
-        print "Usage: rosrun living_lab_robot_moveit_client test_pose <reference_link> <x> <y> <z> <r (deg)> <p (deg)> <y (deg)> <joint_name> <position> <upper_offset> <lower_offset>"
-        exit(-1)
 
     m = main(sys.argv[1:])
