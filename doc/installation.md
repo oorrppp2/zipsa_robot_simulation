@@ -23,7 +23,7 @@ It has only one way at this time (build from source in Catkin workspace) to inst
 
     $ cd $HOME/catkin_ws/
     $ wstool init src
-    $ wstool merge -t src ./src/living_lab_robot_v2/doc/living_lab_robot.rosinstall
+    $ wstool merge -t src ./src/zipsa_robot_bringup/doc/living_lab_robot.rosinstall
     $ cd src
     $ wstool update
 
@@ -33,6 +33,16 @@ It has only one way at this time (build from source in Catkin workspace) to inst
     $ cd $HOME/catkin_ws/src
     $ rosdep install --from-paths . --ignore-src -r -y
     $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r
+    $ sudo apt-get install python3 python-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev libxml2-dev zlib1g-dev libblas-dev libatlas-base-dev ros-melodic-moveit-commander ros-kinetic-trac-ik-kinematics-plugin ros-kinetic-gazebo*
+    $ sudo apt-get install ros-melodic-trac-ik-kinematics-plugin
+    $ sudo apt install ros-melodic-gazebo*
+    $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r
+    
+    $ cd $HOME/catkin_ws/src
+    $ git clone https://github.com/byeongkyu/gazebo_mimic_joint_plugin.git
+    $ rosdep install --from-paths . --ignore-src -r -y
+    $ git clone https://github.com/byeongkyu/robotis_gripper.git
+
 
 
 ### Build
