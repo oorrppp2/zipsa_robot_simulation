@@ -40,7 +40,7 @@ It has only one way at this time (build from source in Catkin workspace) to inst
     $ cd $HOME/catkin_ws/src
     $ rosdep install --from-paths . --ignore-src -r -y
     $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r
-    $ sudo apt-get install python3 python-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev libxml2-dev zlib1g-dev libblas-dev libatlas-base-dev ros-melodic-moveit-commander ros-melodic-trac-ik-kinematics-plugin ros-melodic-gazebo* ros-melodic-realsense2-camera* -y
+    $ sudo apt-get install python3 python-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev libxml2-dev zlib1g-dev libblas-dev libatlas-base-dev ros-melodic-moveit-commander ros-melodic-trac-ik-kinematics-plugin ros-melodic-gazebo* ros-melodic-realsense2-camera* ros-melodic-rgbd-launch -y
     $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r
     
     $ cd $HOME/catkin_ws/src
