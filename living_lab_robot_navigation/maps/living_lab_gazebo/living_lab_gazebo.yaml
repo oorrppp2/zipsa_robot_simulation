@@ -1,4 +1,4 @@
-image: /home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_navigation/maps/living_lab_gazebo/living_lab_gazebo.pgm
+image: living_lab_gazebo.pgm
 resolution: 0.050000
 origin: [-100.000000, -100.000000, 0.000000]
 negate: 0
