@@ -15,7 +15,14 @@ from living_lab_robot_moveit_client.msg import PlanExecutePoseConstraintsAction,
 from moveit_msgs.msg import RobotState, Constraints, JointConstraint
 import shape_msgs.msg
 import object_recognition_msgs.srv as object_recognition_srvs
+from moveit_msgs.msg import PlanningScene
 #from moveit_python import PlanningSceneInterface
+
+from sensor_msgs.msg import PointCloud2
+from sensor_msgs import point_cloud2
+import rospy
+import time
+from random import *
 
 COLLISION_OBJECT_TOPIC = "/collision_object"
 OBJECT_INFORMATION_TOPIC = "/get_object_info"
@@ -42,6 +49,7 @@ class MoveitClientNode:
 		rospy.loginfo("============ Reference planning frame: %s" % self.group.get_planning_frame())
 		rospy.loginfo("============ Reference end_effector link: %s" % self.group.get_end_effector_link())
 
+#		self.sub_callback_pointcloud = rospy.Subscriber('/move_group/filtered_cloud', PointCloud2, self.callback_pointcloud)
 		self.sub_add_obstacle = rospy.Subscriber('/add_obstacle', String, self.add_obstacle)
 		self.sub_del_obstacle = rospy.Subscriber('/del_obstacle', String, self.del_obstacle)
 		self.sub_del_all_obstacles = rospy.Subscriber('/del_all_obstacles', String, self.del_all_obstacles)
@@ -58,6 +66,46 @@ class MoveitClientNode:
 
 		self.box_names_arr = []
 		self.box_pose = geometry_msgs.msg.PoseStamped()
+
+		self.collision_objects = []
+
+
+	def callback_pointcloud(self, data):
+		assert isinstance(data, PointCloud2)
+		for i in range(len(self.box_names_arr)):
+			self.scene.remove_world_object(self.box_names_arr[i])
+#			print("Remove " + str(self.box_names_arr[i]) + " result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=4, box_name=self.box_names_arr[i])))
+		self.box_names_arr = []
+		gen = point_cloud2.read_points(data, field_names=("x", "y", "z"), skip_nans=True)
+#		time.sleep(1)
+		print(type(gen))
+		itr = 0
+		for p in gen:
+			f = random()
+#			print(f)
+			if f < 0.999:
+#				print(f)
+				continue
+#			print(" x : %.3f  y: %.3f  z: %.3f" %(p[0],p[1],p[2]))
+			itr += 1
+			self.box_pose.header.frame_id = "map"
+			self.box_pose.pose.orientation.w = 1.0
+			self.box_pose.pose.position.x = p[0]
+			self.box_pose.pose.position.y = p[1]
+			self.box_pose.pose.position.z = p[2]
+			box_name = "point" + str(itr)
+			self.scene.add_box(box_name, self.box_pose, size=(0.01, 0.01, 0.01))
+			self.box_names_arr.append(box_name)
+
+		start = rospy.get_time()
+		seconds = rospy.get_time()
+		is_known = False
+		print(itr)
+#		print("Add box result : " + str(self.wait_for_state_update(box_is_known=True, timeout=4, box_name=box_name)))
+
+	def listen_planningscene(self, msg):
+		self.collision_objects = msg.world.collision_objects
+		print(self.collision_objects)
 
 	def add_obstacle(self, msg):
 # received_data = [position x, position y, position z, box_name, size_x, size_y, size_z]
