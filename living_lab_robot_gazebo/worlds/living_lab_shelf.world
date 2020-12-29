@@ -907,6 +907,9 @@
     <audio>
       <device>default</device>
     </audio>
+
+<!--
+
     <model name='living_lab_shelf'>
       <link name='link_1'>
         <inertial>
@@ -1892,6 +1895,9 @@
       <allow_auto_disable>1</allow_auto_disable>
       <pose frame=''>0.229748 -0.460576 0 0 -0 0</pose>
     </model>
+
+-->
+
     <model name='coke_can'>
       <link name='link'>
         <inertial>
