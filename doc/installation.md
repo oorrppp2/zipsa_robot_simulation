@@ -18,12 +18,19 @@ It has only one way at this time (build from source in Catkin workspace) to inst
     $ cd $HOME/catkin_ws/src
     $ git clone https://github.com/byeongkyu/living_lab_robot_v2
 
+### Install Dependencies (Intel realsense)
+    $ sudo apt-key adv --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
+    $ sudo add-apt-repository "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo bionic main" -u
+    $ sudo apt-get install librealsense2-dkms
+    $ sudo apt-get install librealsense2-utils
+    $ sudo apt-get install librealsense2-dev
+
 
 ### Install Dependencies (ROS packages)
 
     $ cd $HOME/catkin_ws/
     $ wstool init src
-    $ wstool merge -t src ./src/zipsa_robot_bringup/doc/living_lab_robot.rosinstall
+    $ wstool merge -t src ./src/zipsa_robot_simulation/doc/living_lab_robot.rosinstall
     $ cd src
     $ wstool update
 
@@ -33,9 +40,7 @@ It has only one way at this time (build from source in Catkin workspace) to inst
     $ cd $HOME/catkin_ws/src
     $ rosdep install --from-paths . --ignore-src -r -y
     $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r
-    $ sudo apt-get install python3 python-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev libxml2-dev zlib1g-dev libblas-dev libatlas-base-dev ros-melodic-moveit-commander ros-kinetic-trac-ik-kinematics-plugin ros-kinetic-gazebo*
-    $ sudo apt-get install ros-melodic-trac-ik-kinematics-plugin
-    $ sudo apt install ros-melodic-gazebo*
+    $ sudo apt-get install python3 python-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev libxml2-dev zlib1g-dev libblas-dev libatlas-base-dev ros-melodic-moveit-commander ros-melodic-trac-ik-kinematics-plugin ros-melodic-gazebo* ros-melodic-realsense2-camera* ros-melodic-rgbd-launch -y
     $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r
     
     $ cd $HOME/catkin_ws/src
