@@ -30,6 +30,7 @@ from living_lab_robot_moveit_client.msg import PlanExecuteNamedPoseAction, PlanE
 from living_lab_robot_moveit_client.msg import PlanExecutePoseAction, PlanExecutePoseGoal
 from living_lab_robot_moveit_client.msg import PlanExecutePoseConstraintsAction, PlanExecutePoseConstraintsGoal
 from living_lab_robot_perception.msg import ObjectDetectAction, ObjectDetectGoal
+from living_lab_robot_perception.msg import ReceiveTargetAction, ReceiveTargetGoal
 
 global Point_data
 global Point_flag
@@ -39,8 +40,8 @@ def create_root():
     root = py_trees.composites.Parallel("demo")
     done_scene = DonePlayScene(name="done_scene")
 
-    gripper_close = MoveJoint(name="gripper_close", controller_name="/body/gripper_controller", command=0.0)
-    gripper_open = MoveJoint(name="gripper_open", controller_name="/body/gripper_controller", command=1.0)
+    gripper_close = MoveJoint(name="gripper_close", controller_name="/gripper_controller", command=0.0)
+    gripper_open = MoveJoint(name="gripper_open", controller_name="/gripper_controller", command=1.0)
 
     goal_grap_ready = PlanExecuteNamedPoseGoal()
     goal_grap_ready.target_name ="grasp_ready"
@@ -69,8 +70,8 @@ def create_root():
         action_goal=goal_home
     )
 
-    head_tilt_up = MoveJoint(name="tilt_up", controller_name="/head/tilt_controller", command=0.0)
-    head_tilt_down = MoveJoint(name="tilt_down", controller_name="/head/tilt_controller", command=0.4)
+    head_tilt_up = MoveJoint(name="tilt_up", controller_name="/tilt_controller", command=0.0)
+    head_tilt_down = MoveJoint(name="tilt_down", controller_name="/tilt_controller", command=0.4)
 
     target_x = 0.7
     target_y = -0.3
@@ -137,7 +138,7 @@ def create_root():
         name="order_target",
         action_namespace="/order_received",
         action_spec=ReceiveTargetAction,
-        action_goal=ReceiveTargetDetectGoal()
+        action_goal=ReceiveTargetGoal()
     )
 
     arm_pull_out = Fold_arm("Pull out", 0)

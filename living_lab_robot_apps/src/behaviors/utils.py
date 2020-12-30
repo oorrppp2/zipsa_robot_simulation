@@ -28,7 +28,7 @@ class Fold_arm(py_trees.behaviour.Behaviour):
 
     def update(self):
         print(self.name + " : " + str(self.data))
-        pub = rospy.Publisher('/body/arm_base_controller/command', Float64, queue_size=10)
+        pub = rospy.Publisher('/arm_base_controller/command', Float64, queue_size=10)
         rospy.sleep(0.4)
         pub.publish(data=self.data)
         rospy.sleep(1.0)
