@@ -13,7 +13,7 @@ import geometry_msgs
 from living_lab_robot_perception.msg import ObjectDetectAction, ObjectDetectFeedback, ObjectDetectResult
 from geometry_msgs.msg import PoseStamped, Quaternion, PointStamped
 from tf2_geometry_msgs import PoseStamped as TF2PoseStamped
-from qrcode_detector_ros.msg import Result
+from living_lab_robot_perception.msg import Result
 from tf.transformations import quaternion_from_euler, quaternion_multiply
 
 
@@ -49,7 +49,7 @@ class ObjectDetectServer:
 	br = tf2_ros.TransformBroadcaster()
 	t = geometry_msgs.msg.TransformStamped()
 	t.header.stamp = rospy.Time.now()
-	t.header.frame_id = "camera_color_optical_frame"
+	t.header.frame_id = "camera_rgb_optical_frame"
 	t.child_frame_id = "object_coordinate"
 	t.transform.rotation.x = 0
 	t.transform.rotation.y = 0
@@ -126,7 +126,7 @@ class ObjectDetectServer:
         detect_pose = TF2PoseStamped()
         #print("type : ", detect_pose)
         detect_pose.header.frame_id = "object_coordinate"
-        #detect_pose.header.stamp = rospy.Time.now()
+#        detect_pose.header.stamp = rospy.Time.now()
         detect_pose.pose.position.x = self.detected_object.point.x
         detect_pose.pose.position.y = self.detected_object.point.y
         detect_pose.pose.position.z = self.detected_object.point.z
