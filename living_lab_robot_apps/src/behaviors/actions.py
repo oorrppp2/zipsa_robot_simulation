@@ -10,84 +10,6 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from tf.transformations import *
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
 
-
-class GetJointStateActionClient(py_trees.behaviour.Behaviour):
-    def __init__(self, name="Action Client", action_spec=None, action_goal=None, action_namespace="/action",
-                 override_feedback_message_on_running="moving"):
-        super(GetJointStateActionClient, self).__init__(name)
-        self.action_client = None
-        self.sent_goal = False
-        self.action_spec = action_spec
-        self.action_goal = action_goal
-        self.action_namespace = action_namespace
-        self.override_feedback_message_on_running = override_feedback_message_on_running
-
-    def setup(self, timeout):
-        self.action_client = actionlib.SimpleActionClient(
-            self.action_namespace,
-            self.action_spec
-        )
-        if not self.action_client.wait_for_server(rospy.Duration(timeout)):
-            self.logger.error("{0}.setup() could not connect to the rotate action server at '{1}'".format(self.__class__.__name__, self.action_namespace))
-            self.action_client = None
-            return False
-        return True
-
-    def initialise(self):
-        self.logger.debug("{0}.initialise()".format(self.__class__.__name__))
-        self.sent_goal = False
-
-    def update(self):
-#	print("GetJointStateActionClient is called")
-        self.logger.debug("{0}.update()".format(self.__class__.__name__))
-        if not self.action_client:
-            self.feedback_message = "no action client, did you call setup() on your tree?"
-            return py_trees.Status.INVALID
-        # pity there is no 'is_connected' api like there is for c++
-        if not self.sent_goal:
-            self.action_client.send_goal(self.action_goal)
-            self.sent_goal = True
-            self.feedback_message = "sent goal to the action server"
-            return py_trees.Status.RUNNING
-        self.feedback_message = self.action_client.get_goal_status_text()
-        if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
-                                              actionlib_msgs.GoalStatus.PREEMPTED]:
-            return py_trees.Status.FAILURE
-        result = self.action_client.get_result()
-
-        if result:
-            print("code_data :"+ str(result.code_data))
-            target_elevation_position = float(result.code_data) + 0.05
-            print("target_elevation_position :"+ str(target_elevation_position))
-
-            client = actionlib.SimpleActionClient('/body/arm_controller/follow_joint_trajectory', FollowJointTrajectoryAction)
-            client.wait_for_server()
-
-            goal = FollowJointTrajectoryGoal()
-            goal.trajectory.header.stamp = rospy.Time.now()
-            goal.trajectory.joint_names = ['elevation_joint']
-
-            point = JointTrajectoryPoint()
-            point.positions = [target_elevation_position]
-            point.time_from_start = rospy.Duration(1.0)
-
-            goal.trajectory.points.append(point)
-
-            client.send_goal(goal)
-            client.wait_for_result()
-
-            rospy.sleep(1.0)
-
-            client.send_goal(goal)
-            client.wait_for_result()
-
-            print client.get_result()
-
-            return py_trees.Status.SUCCESS
-        else:
-            self.feedback_message = self.override_feedback_message_on_running
-            return py_trees.Status.RUNNING
-
 class OrderActionClient(py_trees.behaviour.Behaviour):
     def __init__(self, name="Action Client", action_spec=None, action_goal=None, action_namespace="/action",
                  override_feedback_message_on_running="moving"):
@@ -100,7 +22,7 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
         self.override_feedback_message_on_running = override_feedback_message_on_running
 
         self.blackboard = py_trees.blackboard.Blackboard()
-        # self.blackboard.qrcode_pose = PoseStamped()
+        # self.blackboard.object_pose = PoseStamped()
         self.blackboard.target = ""
 
     def setup(self, timeout):
@@ -154,10 +76,10 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
         self.sent_goal = False
 
 
-class QRCodeActionClient(py_trees.behaviour.Behaviour):
+class ObjectDetectionActionClient(py_trees.behaviour.Behaviour):
     def __init__(self, name="Action Client", action_spec=None, action_goal=None, action_namespace="/action",
                  override_feedback_message_on_running="moving"):
-        super(QRCodeActionClient, self).__init__(name)
+        super(ObjectDetectionActionClient, self).__init__(name)
         self.action_client = None
         self.sent_goal = False
         self.action_spec = action_spec
@@ -166,7 +88,7 @@ class QRCodeActionClient(py_trees.behaviour.Behaviour):
         self.override_feedback_message_on_running = override_feedback_message_on_running
 
         self.blackboard = py_trees.blackboard.Blackboard()
-        self.blackboard.qrcode_pose = PoseStamped()
+        self.blackboard.object_pose = PoseStamped()
         self.blackboard.frame_id = ""
 
 	self.n_try = 20
@@ -211,8 +133,8 @@ class QRCodeActionClient(py_trees.behaviour.Behaviour):
         result = self.action_client.get_result()
 
         if result:
-		self.blackboard.qrcode_pose = result.pose
-		self.blackboard.frame_id = result.code_data
+		self.blackboard.object_pose = result.pose
+		self.blackboard.frame_id = result.data
 		print("Conversion succeed!!")
 		print("Result with (robot coordinate)")
 		print(result)
@@ -274,6 +196,7 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
     def initialise(self):
         self.logger.debug("{0}.initialise()".format(self.__class__.__name__))
         self.sent_goal = False
+        self.fail_count = 0	# Try 10 times. 
 
     def update(self):
         self.logger.debug("{0}.update()".format(self.__class__.__name__))
@@ -284,30 +207,30 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
         if not self.sent_goal:
             if self.blackboard.frame_id != self.blackboard.target:
                 print("Detected fail!")
-                return py_trees.Status.SUCCESS
+                return py_trees.Status.FAILURE
 
             #update goal data from blackboard
             self.action_goal.target_pose.header.frame_id = "base_footprint"
-#            self.action_goal.target_pose.pose.position.x = self.blackboard.qrcode_pose.pose.position.x
-#            self.action_goal.target_pose.pose.position.y = self.blackboard.qrcode_pose.pose.position.y
-#            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z
-            self.action_goal.target_pose.pose.position.x = self.blackboard.qrcode_pose.pose.position.x + self.x_offset
-            self.action_goal.target_pose.pose.position.y = self.blackboard.qrcode_pose.pose.position.y+ self.y_offset
-            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z+ self.z_offset
+#            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x
+#            self.action_goal.target_pose.pose.position.y = self.blackboard.object_pose.pose.position.y
+#            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z
+            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x + self.x_offset
+            self.action_goal.target_pose.pose.position.y = self.blackboard.object_pose.pose.position.y + self.y_offset
+            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z + self.z_offset
 #            self.action_goal.target_pose.pose.position.x = 0.6
 #            self.action_goal.target_pose.pose.position.y = 0
 #            self.action_goal.target_pose.pose.position.z = 0.8
 #            if self.x_offset != 0:
-#	            self.action_goal.target_pose.pose.position.x = self.blackboard.qrcode_pose.pose.position.x - (self.blackboard.qrcode_pose.pose.position.x/8.0)
-#	            self.action_goal.target_pose.pose.position.y = self.blackboard.qrcode_pose.pose.position.y - (self.blackboard.qrcode_pose.pose.position.y/8.0)
-#	            self.action_goal.target_pose.pose.position.x = self.blackboard.qrcode_pose.pose.position.x + 0.04
-#	            self.action_goal.target_pose.pose.position.y = self.blackboard.qrcode_pose.pose.position.y
-#	            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z - 0.02
+#	            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x - (self.blackboard.object_pose.pose.position.x/8.0)
+#	            self.action_goal.target_pose.pose.position.y = self.blackboard.object_pose.pose.position.y - (self.blackboard.object_pose.pose.position.y/8.0)
+#	            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x + 0.04
+#	            self.action_goal.target_pose.pose.position.y = self.blackboard.object_pose.pose.position.y
+#	            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z - 0.02
 
             if self.mode == "put":
-	            self.action_goal.target_pose.pose.position.x = self.blackboard.qrcode_pose.pose.position.x
-	            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z + 0.03
-	            self.action_goal.target_pose.pose.position.y = -self.blackboard.qrcode_pose.pose.position.y
+	            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x
+	            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z + 0.03
+	            self.action_goal.target_pose.pose.position.y = -self.blackboard.object_pose.pose.position.y
             # rospy.loginfo(self.action_goal.target_pose.pose.position.x)
 
             theta = math.atan2(self.action_goal.target_pose.pose.position.y, self.action_goal.target_pose.pose.position.x)
@@ -352,10 +275,26 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
             self.sent_goal = True
             self.feedback_message = "sent goal to the action server"
             return py_trees.Status.RUNNING
+
+#        print("self.action_client.get_state() : " + str(self.action_client.get_state()))
+#        print("self.feedback_message : " + str(self.feedback_message))
         self.feedback_message = self.action_client.get_goal_status_text()
+
+        # Failure case
         if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
                                               actionlib_msgs.GoalStatus.PREEMPTED]:
-            return py_trees.Status.FAILURE
+            if self.fail_count < 10:
+                self.sent_goal = False
+                self.fail_count += 1
+                self.x_offset -= 0.01
+#                self.y_offset += 1
+                self.z_offset += 0.005
+                print("Action failed. Retry :: " + str(self.fail_count) + " try")
+                return py_trees.Status.RUNNING
+            else:
+                print("Tried 10 times. Action failed.")
+                return py_trees.Status.FAILURE
+
         result = self.action_client.get_result()
 
         if result:
@@ -365,9 +304,12 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
             return py_trees.Status.RUNNING
 
     def terminate(self, new_status):
+        print("terminate")
+        print("new_status : " + str(new_status))
         self.logger.debug("%s.terminate(%s)" % (self.__class__.__name__, "%s->%s" % (self.status, new_status) if self.status != new_status else "%s" % new_status))
         if self.action_client is not None and self.sent_goal:
             motion_state = self.action_client.get_state()
+            print("motion_state : " + str(motion_state))
             if ((motion_state == actionlib_msgs.GoalStatus.PENDING) or (motion_state == actionlib_msgs.GoalStatus.ACTIVE) or
                (motion_state == actionlib_msgs.GoalStatus.PREEMPTING) or (motion_state == actionlib_msgs.GoalStatus.RECALLING)):
                 self.action_client.cancel_goal()
