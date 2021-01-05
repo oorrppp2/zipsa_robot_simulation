@@ -1019,7 +1019,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/mobile_assy.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/mobile_assy.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -1044,7 +1044,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/mobile_assy.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/mobile_assy.dae</uri>
             </mesh>
           </geometry>
           <material>
@@ -1151,7 +1151,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/body_assy.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/body_assy.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1173,7 +1173,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/body_assy.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/body_assy.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1218,7 +1218,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/elevation_module.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/elevation_module.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1240,7 +1240,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/elevation_module.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/elevation_module.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1287,7 +1287,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_base.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_base.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1309,7 +1309,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_base.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_base.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1356,7 +1356,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link1.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link1.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1378,7 +1378,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link1.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link1.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1425,7 +1425,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link2.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link2.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1447,7 +1447,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link2.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link2.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1494,7 +1494,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link3.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link3.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1516,7 +1516,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link3.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link3.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1563,7 +1563,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link4.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link4.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1585,7 +1585,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link4.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link4.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1632,7 +1632,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link5.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link5.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1654,7 +1654,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link5.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link5.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1701,7 +1701,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link6.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link6.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1723,7 +1723,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/gripper_base.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/gripper_base.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1745,7 +1745,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link6.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/arm_link6.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1754,7 +1754,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/gripper_base.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/gripper_base.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1801,7 +1801,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/inner_link.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/inner_link.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1823,7 +1823,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/inner_link.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/inner_link.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1868,7 +1868,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/finger.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/finger.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1890,7 +1890,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/finger.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/finger.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1935,7 +1935,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/l_outer_link.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/l_outer_link.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1957,7 +1957,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/l_outer_link.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/l_outer_link.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2002,7 +2002,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/inner_link.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/inner_link.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2024,7 +2024,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/inner_link.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/inner_link.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2069,7 +2069,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/finger.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/finger.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2091,7 +2091,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/finger.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/finger.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2136,7 +2136,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/r_outer_link.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/r_outer_link.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2158,7 +2158,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/r_outer_link.dae</uri>
+              <uri>/home/user/catkin_ws/src/robotis_gripper/robotis_gripper_description/meshes/r_outer_link.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2203,7 +2203,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_assy.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_assy.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2225,7 +2225,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_assy.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_assy.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2270,7 +2270,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_screen.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_screen.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2292,7 +2292,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_screen.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_screen.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2337,7 +2337,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_tilt_unit.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_tilt_unit.dae</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2380,7 +2380,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_tilt_unit.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/head_tilt_unit.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2389,7 +2389,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/realsense-ros/realsense2_description/meshes/d435.dae</uri>
+              <uri>/home/user/catkin_ws/src/realsense-ros/realsense2_description/meshes/d435.dae</uri>
             </mesh>
           </geometry>
           <material>
@@ -2501,7 +2501,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/omni_wheel.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/omni_wheel.dae</uri>
             </mesh>
           </geometry>
           <material>
@@ -2575,7 +2575,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/omni_wheel.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/omni_wheel.dae</uri>
             </mesh>
           </geometry>
           <material>
@@ -2649,7 +2649,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/vision/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/omni_wheel.dae</uri>
+              <uri>/home/user/catkin_ws/src/zipsa_robot_simulation/living_lab_robot_description/meshes/omni_wheel.dae</uri>
             </mesh>
           </geometry>
           <material>
