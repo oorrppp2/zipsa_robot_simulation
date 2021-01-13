@@ -231,7 +231,7 @@ def create_root():
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),
-        x_offset=-0.03,
+        x_offset=-0.05,
         y_offset=0,
         z_offset=0.05,
         constraint=True,
@@ -304,7 +304,7 @@ def create_root():
     put_object_mention1 = Print_message(name="* Putting down the object*")
 
     move_manipulator_to_put_down = GraspActionClient(
-        name="move_manipulator_to_grasp3",
+        name="move_manipulator_to_grasp",
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),

@@ -229,9 +229,8 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
 
             if self.mode == "put":
 	            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x
-	            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z + 0.03
+	            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z + 0.1
 	            self.action_goal.target_pose.pose.position.y = -self.blackboard.object_pose.pose.position.y
-            # rospy.loginfo(self.action_goal.target_pose.pose.position.x)
 
             theta = math.atan2(self.action_goal.target_pose.pose.position.y, self.action_goal.target_pose.pose.position.x)
 
@@ -283,17 +282,17 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
         # Failure case
         if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
                                               actionlib_msgs.GoalStatus.PREEMPTED]:
-            if self.fail_count < 10:
-                self.sent_goal = False
-                self.fail_count += 1
-                self.x_offset -= 0.01
-#                self.y_offset += 1
-                self.z_offset += 0.005
-                print("Action failed. Retry :: " + str(self.fail_count) + " try")
-                return py_trees.Status.RUNNING
-            else:
-                print("Tried 10 times. Action failed.")
-                return py_trees.Status.FAILURE
+#             if self.fail_count < 10:
+#                 self.sent_goal = False
+#                 self.fail_count += 1
+#                 self.x_offset -= 0.01
+# #                self.y_offset += 1
+#                 self.z_offset += 0.005
+#                 print("Action failed. Retry :: " + str(self.fail_count) + " try")
+#                 return py_trees.Status.RUNNING
+#             else:
+#                 print("Tried 10 times. Action failed.")
+            return py_trees.Status.FAILURE
 
         result = self.action_client.get_result()
 
@@ -304,8 +303,8 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
             return py_trees.Status.RUNNING
 
     def terminate(self, new_status):
-        print("terminate")
-        print("new_status : " + str(new_status))
+        # print("terminate")
+        # print("new_status : " + str(new_status))
         self.logger.debug("%s.terminate(%s)" % (self.__class__.__name__, "%s->%s" % (self.status, new_status) if self.status != new_status else "%s" % new_status))
         if self.action_client is not None and self.sent_goal:
             motion_state = self.action_client.get_state()
