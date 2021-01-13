@@ -35,8 +35,11 @@ class ConvertBoundingBoxNode
         {
 			pointcloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("/camera/depth_registered/points", 1, &ConvertBoundingBoxNode::pointcloud_callback, this);
 			boundingboxes_sub_ = nh_.subscribe<darknet_ros_msgs::BoundingBoxes>("/darknet_ros/bounding_boxes", 1, &ConvertBoundingBoxNode::boundingbox_callback, this);
+			remove_object_sub_ = nh_.subscribe<std_msgs::String>("/remove_object", 1, &ConvertBoundingBoxNode::remove_object_callback, this);
 			pub_result_ = nh_.advertise<convert_2d_to_3d::Result>("detected_object", 1);
 			pointcloud_pub = nh_.advertise<sensor_msgs::PointCloud2>("/camera/depth_registered/removed_object_points", 1);
+
+			remove_object = false;
 
             //cv::namedWindow("result", cv::WINDOW_AUTOSIZE);
             ROS_INFO("[%s] initialized...", ros::this_node::getName().c_str());
@@ -52,6 +55,16 @@ class ConvertBoundingBoxNode
 		gBoundingboxes.bounding_boxes.clear();
 		for(int i = 0; i < boundingbox->bounding_boxes.size(); i++) {
 		    gBoundingboxes.bounding_boxes.push_back(boundingbox->bounding_boxes[i]);
+		}
+	}
+
+	void remove_object_callback(const std_msgs::StringConstPtr& msg) {
+		if(msg->data == "request") {
+			std::cout << msg->data << std::endl;
+			remove_object = true;
+		} else if(msg->data == "done") {
+			std::cout << msg->data << std::endl;
+			remove_object = false;
 		}
 	}
 
@@ -77,14 +90,42 @@ class ConvertBoundingBoxNode
 				
 				// std::cout <<"point : " << p << std::endl;
 				// std::cout <<" ==> " << p.x << " , " << p.y << " , " << p.z << std::endl;
-				// std::cout << "ID : " << id << std::endl;
+				std::cout << "ID : " << id << std::endl;
 
+				if(remove_object) {
 				for(int x = gBoundingboxes.bounding_boxes[i].xmin - 5; x < gBoundingboxes.bounding_boxes[i].xmax + 5; x++) {
 					for(int y = gBoundingboxes.bounding_boxes[i].ymin - 5; y < gBoundingboxes.bounding_boxes[i].ymax + 5; y++) {
-						pcl_cloud(x, y).x, pcl_cloud(x, y).y = 0;
-						pcl_cloud(x, y).z = -10;
+						pcl_cloud(x, y).x, pcl_cloud(x, y).y, pcl_cloud(x, y).z = NULL;
 					}
 				}
+				}
+
+				// std::cout << pcl_cloud(gBoundingboxes.bounding_boxes[i].xmin, gBoundingboxes.bounding_boxes[i].ymin) << std::endl;
+				// std::cout << pcl_cloud(gBoundingboxes.bounding_boxes[i].xmax, gBoundingboxes.bounding_boxes[i].ymin) << std::endl;
+				// std::cout << pcl_cloud(gBoundingboxes.bounding_boxes[i].xmin, gBoundingboxes.bounding_boxes[i].ymax) << std::endl;
+				// std::cout << pcl_cloud(gBoundingboxes.bounding_boxes[i].xmax, gBoundingboxes.bounding_boxes[i].ymax) << std::endl;
+
+				// std::cout << "==================================================" << std::endl;
+
+				// create static tf
+	/*
+				geometry_msgs::TransformStamped transformStamped;
+				std::string object_coordinate = "object_coordinate";
+				transformStamped.header.frame_id = "camera_color_optical_frame";
+				transformStamped.child_frame_id = object_coordinate;
+
+				transformStamped.transform.translation.x = x;
+				transformStamped.transform.translation.y = y;
+				transformStamped.transform.translation.z = z;
+
+				transformStamped.transform.rotation.x = 0;
+				transformStamped.transform.rotation.y = 0;
+				transformStamped.transform.rotation.z = 0;
+				transformStamped.transform.rotation.w = 1;
+
+				transformStamped.header.stamp = ros::Time::now();
+				tfb_.sendTransform(transformStamped);
+	*/
 				// Publish result
 				convert_2d_to_3d::Result msg;
 				msg.type = "detected_object";
@@ -108,6 +149,9 @@ class ConvertBoundingBoxNode
 
 			ros::Duration(0.01).sleep();
 			gBoundingboxes.bounding_boxes.clear();
+		}
+		else if (!remove_object) {
+			pointcloud_pub.publish(pcl_cloud);
 		}
 	}
 
