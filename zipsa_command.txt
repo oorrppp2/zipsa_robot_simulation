@@ -7,7 +7,7 @@ rostopic pub -1 /arm_base_controller/command std_msgs/Float64 "data: 0"
 rostopic pub -1 /arm_base_controller/command std_msgs/Float64 "data: -0.15"
 
 
-rostopic pub -1 /tilt_controller/command std_msgs/Float64 "data: 0.4"
+rostopic pub -1 /tilt_controller/command std_msgs/Float64 "data: 0.5"
 
 tf_echo
 rosrun tf tf_echo /base_link /end_effector
@@ -85,7 +85,9 @@ rostopic pub -1 /wait_select_scene std_msgs/String "data: 'go_home'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'finish_demo'"
 
 
-rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 0.94 0.0623 1.012
+rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 1.04 -0.1266 1.012
+rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 0.7 -0.1266 0.9
 rosrun tf tf_echo /base_footprint /camera_link
 
+rostopic pub -1 /remove_object std_msgs/String "data: 'request'"
 
