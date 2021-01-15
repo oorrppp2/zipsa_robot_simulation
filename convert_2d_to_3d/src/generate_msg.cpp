@@ -35,9 +35,14 @@ class ConvertBoundingBoxNode
         {
 			pointcloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("/camera/depth_registered/points", 1, &ConvertBoundingBoxNode::pointcloud_callback, this);
 			boundingboxes_sub_ = nh_.subscribe<darknet_ros_msgs::BoundingBoxes>("/darknet_ros/bounding_boxes", 1, &ConvertBoundingBoxNode::boundingbox_callback, this);
-			target_id_sub_ = nh_.subscribe<std_msgs::String>("/order_target", 1, &ConvertBoundingBoxNode::target_id_callback, this);
+			target_id_sub_ = nh_.subscribe<std_msgs::String>("/remove_points_request", 1, &ConvertBoundingBoxNode::target_id_callback, this);
 			pub_result_ = nh_.advertise<convert_2d_to_3d::Result>("detected_object", 1);
 			pointcloud_pub = nh_.advertise<sensor_msgs::PointCloud2>("/camera/depth_registered/removed_object_points", 1);
+
+			last_boundingbox_xmin = 0;
+			last_boundingbox_xmax = 0;
+			last_boundingbox_ymin = 0;
+			last_boundingbox_ymax = 0;
 
             //cv::namedWindow("result", cv::WINDOW_AUTOSIZE);
             ROS_INFO("[%s] initialized...", ros::this_node::getName().c_str());
@@ -64,6 +69,7 @@ class ConvertBoundingBoxNode
 	{
 //	    printf("Bounding boxes size : %d\n", gBoundingboxes.bounding_boxes.size());
 		pcl::PointCloud<pcl::PointXYZRGB> pcl_cloud;
+		// pcl::PointCloud<pcl::PointXYZRGB>::iterator it;
 		pcl::fromROSMsg(*pointcloud, pcl_cloud);
 		if(!gBoundingboxes.bounding_boxes.empty()) {
 
@@ -86,13 +92,30 @@ class ConvertBoundingBoxNode
 				// std::cout << "target_id : " << target_id << std::endl;
 
 				if(id == target_id) {
-					std::cout << target_id << " points removed" << std::endl;
-					for(int x = gBoundingboxes.bounding_boxes[i].xmin - 5; x < gBoundingboxes.bounding_boxes[i].xmax + 5; x++) {
-						for(int y = gBoundingboxes.bounding_boxes[i].ymin - 5; y < gBoundingboxes.bounding_boxes[i].ymax + 5; y++) {
-							pcl_cloud(x, y).x, pcl_cloud(x, y).y = 0;
-							pcl_cloud(x, y).z = -10;
+					std::cout << target_id << " points removed!\t";
+					std::cout << "remove_padding : " << remove_padding << std::endl;
+					last_boundingbox_xmin = gBoundingboxes.bounding_boxes[i].xmin - remove_padding;
+					last_boundingbox_xmax = gBoundingboxes.bounding_boxes[i].xmax + remove_padding;
+					last_boundingbox_ymin = gBoundingboxes.bounding_boxes[i].ymin - remove_padding;
+					last_boundingbox_ymax = gBoundingboxes.bounding_boxes[i].ymax + remove_padding;
+
+					// it = pcl_cloud.begin();
+					// for(int i = 0; i < last_boundingbox_ymax - last_boundingbox_ymin; i++) {
+					// 	std::cout << "i : " << i << std::endl;
+					// 	std::cout << "width : " << pcl_cloud.width << std::endl;
+					// 	pcl_cloud.erase(it + y * pcl_cloud.width + last_boundingbox_xmin,
+					// 					it + y * pcl_cloud.width + last_boundingbox_xmax);
+					// }
+
+					for(int x = last_boundingbox_xmin; x < last_boundingbox_xmax; x++) {
+						for(int y = last_boundingbox_ymin; y < last_boundingbox_ymax; y++) {
+							pcl_cloud(x, y).x, pcl_cloud(x, y).y = INFINITY;
+							pcl_cloud(x, y).z = INFINITY;
+							// pcl_cloud(x,y).a = 0;
+							// pcl_cloud(x, y)->
 						}
 					}
+					std::cout << "isDense : " << pcl_cloud.is_dense << std::endl;
 				}
 
 				// Publish result
@@ -119,6 +142,15 @@ class ConvertBoundingBoxNode
 			ros::Duration(0.01).sleep();
 			gBoundingboxes.bounding_boxes.clear();
 		}
+		// else {
+		// 	for(int x = last_boundingbox_xmin - remove_padding; x < last_boundingbox_xmax + remove_padding; x++) {
+		// 		for(int y = last_boundingbox_ymin - remove_padding; y < last_boundingbox_ymax + remove_padding; y++) {
+		// 			// pcl_cloud(x, y).x, pcl_cloud(x, y).y = 0;
+		// 			pcl_cloud(x, y).y = 10;
+		// 		}
+		// 	}
+		// 	pointcloud_pub.publish(pcl_cloud);
+		// }
 	}
 
     private:
@@ -131,6 +163,13 @@ class ConvertBoundingBoxNode
 	ros::Publisher pointcloud_pub;
 	darknet_ros_msgs::BoundingBoxes gBoundingboxes;
 	std::string target_id;
+
+	int last_boundingbox_xmin;
+	int last_boundingbox_xmax;
+	int last_boundingbox_ymin;
+	int last_boundingbox_ymax;
+
+	int remove_padding = 20;
 };
 
 int main(int argc, char** argv)
