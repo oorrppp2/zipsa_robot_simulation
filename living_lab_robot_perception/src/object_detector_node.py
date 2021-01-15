@@ -8,6 +8,7 @@ import math
 
 import tf2_ros
 import geometry_msgs
+from std_msgs.msg import Empty, String, Bool, Header, Float64
 
 
 from living_lab_robot_perception.msg import ObjectDetectAction, ObjectDetectFeedback, ObjectDetectResult
@@ -155,12 +156,33 @@ class ObjectDetectServer:
 
         self.result_data = self.result_frame_id
         if success:
-            result.result = True
-            result.data = self.result_data
-            result.pose = result_pose
-            print(result)
-            self.server.set_succeeded(result)
+                result.result = True
+                result.data = self.result_data
+                result.pose = result_pose
+                print(result)
+                self.server.set_succeeded(result)
 
+                # Obstacle add into detected object region.
+                print("Obstacle add into detected object region.")
+                pub = rospy.Publisher("/add_obstacle", String, queue_size=1)
+                rospy.sleep(0.4)
+                pub.publish(data=str(result_pose.pose.position.x) + ' ' + \
+                                 str(result_pose.pose.position.y) + ' ' + \
+                                 str(result_pose.pose.position.z) + ' ' + \
+                                 str(self.result_data) + ' ' + ' 0.5 0.5 0.5')
+                rospy.sleep(2.0)
+                # Remove target region points to clearing.
+                print("Remove target region points to clearing.")
+                pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
+                rospy.sleep(0.4)
+                pub.publish(data=self.result_data)
+                rospy.sleep(2.0)
+                # Remove added obstacle to clear the target region.
+                print("Remove added obstacle to clear the target region.")
+                pub = rospy.Publisher("/del_all_obstacles", String, queue_size=1)
+                rospy.sleep(0.4)
+                pub.publish(data='1')
+                # rospy.sleep(1.0)
 
 if __name__ == '__main__':
     rospy.init_node('object_detect_server')
