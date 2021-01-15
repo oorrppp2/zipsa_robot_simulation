@@ -212,7 +212,9 @@ def create_root():
     find_target.add_children(
         [wait_find_target,
          find_target_mention1,
-         find_object,
+         find_object,   # + Add obstacle
+         wait_time1,
+         wait_time1,
          done_scene,
          ]
     )
