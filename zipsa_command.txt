@@ -12,6 +12,7 @@ rostopic pub -1 /tilt_controller/command std_msgs/Float64 "data: 0.5"
 tf_echo
 rosrun tf tf_echo /base_link /end_effector
 rosrun tf tf_echo /map /base_footprint
+rosrun tf tf_echo /map /object_coordinate
 
 goal move_base
 rostopic echo /move_base/goal 
@@ -33,7 +34,7 @@ rosrun living_lab_robot_moveit_client test_named_pose.py grasp_ready
 
 
 * Obstacle add/del
-rostopic pub -1 /add_obstacle std_msgs/String "data: '1.0 0.0 0.2 table 0.5 2.0 0.4'"
+rostopic pub -1 /add_obstacle std_msgs/String "data: '0.822 0.0712 0.9657 cup 0.5 0.5 0.5'"
 rostopic pub -1 /del_obstacle std_msgs/String "data: 'table'"
 rostopic pub -1 /del_all_obstacles std_msgs/String "data: '1'"
 
@@ -70,14 +71,13 @@ rostopic pub -1 /wait_select_scene std_msgs/String "data: 'intro'"
 rostopic pub -1 /order_target std_msgs/String "data: 'cup'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'find_target'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'arm_control'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grasp_object'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'put_object'"
+
+rostopic pub -1 /remove_points_request std_msgs/String "data: 'cup'"
 
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_table'"
 
-rostopic pub -1 /wait_select_scene std_msgs/String "data: 'find_target'"
-
-rostopic pub -1 /wait_select_scene std_msgs/String "data: 'arm_control'"
-rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grasp_object'"
-rostopic pub -1 /wait_select_scene std_msgs/String "data: 'put_object'"
 (목표물 전달할 장소로 이동)
 (물건 내려놓기)
 rostopic pub -1 /del_all_obstacles std_msgs/String "data: '1'"
@@ -90,4 +90,5 @@ rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 0.7 -0.126
 rosrun tf tf_echo /base_footprint /camera_link
 
 rostopic pub -1 /remove_object std_msgs/String "data: 'request'"
+rosrun 
 
