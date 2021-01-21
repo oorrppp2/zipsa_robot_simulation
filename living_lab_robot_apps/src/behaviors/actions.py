@@ -3,6 +3,7 @@ import py_trees
 import rospy
 import math
 import actionlib_msgs.msg as actionlib_msgs
+from std_msgs.msg import Empty, String, Bool, Header
 from geometry_msgs.msg import PoseStamped
 from tf.transformations import *
 from moveit_msgs.msg import JointConstraint
@@ -95,6 +96,8 @@ class ObjectDetectionActionClient(py_trees.behaviour.Behaviour):
 
     def setup(self, timeout):
         self.logger.debug("%s.setup()" % self.__class__.__name__)
+        self.request_publisher = rospy.Publisher("/request_detection", String, queue_size=10)
+        self.done_publisher = rospy.Publisher("/request_detection", String, queue_size=10)
         self.action_client = actionlib.SimpleActionClient(
             self.action_namespace,
             self.action_spec
@@ -105,11 +108,13 @@ class ObjectDetectionActionClient(py_trees.behaviour.Behaviour):
             return False
         return True
 
+
     def initialise(self):
         self.logger.debug("{0}.initialise()".format(self.__class__.__name__))
         self.sent_goal = False
 
     def update(self):
+        self.request_publisher.publish('request')
 	print(self.feedback_message)
         self.logger.debug("{0}.update()".format(self.__class__.__name__))
         if not self.action_client:
@@ -138,6 +143,7 @@ class ObjectDetectionActionClient(py_trees.behaviour.Behaviour):
 		print("Conversion succeed!!")
 		print("Result with (robot coordinate)")
 		print(result)
+		self.done_publisher.publish('done')
 		return py_trees.Status.SUCCESS
         else:
 		self.feedback_message = self.override_feedback_message_on_running
