@@ -100,7 +100,7 @@ class MoveitClientNode:
 		print(self.box_names_arr)
 		for i in range(len(self.box_names_arr)):
 			self.scene.remove_world_object(self.box_names_arr[i])
-			print("Remove " + str(self.box_names_arr[i]) + " result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=4, box_name=self.box_names_arr[i])))
+			print("Remove " + str(self.box_names_arr[i]) + " result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=2, box_name=self.box_names_arr[i])))
 		self.box_names_arr = []
 		
 
@@ -209,9 +209,12 @@ class MoveitClientNode:
 
 		self.contraints.name = "constraints"
 		self.contraints.joint_constraints.append(js_base)
+		print("==================== Joint Constraints ====================")
 		for js in goal.joint_constraints:
 			self.contraints.joint_constraints.append(js)
+			print(js)
 		self.group.set_path_constraints(self.contraints)
+		print("============================================================")
 
 
 		self.group.clear_pose_targets()
@@ -225,8 +228,6 @@ class MoveitClientNode:
 
 		rospy.loginfo('Planning goal pose...')
 		plan1 = self.group.plan()
-
-		# print(plan1.joint_trajectory)
 
 		if len(plan1.joint_trajectory.points) == 0:
 			result.result = False
