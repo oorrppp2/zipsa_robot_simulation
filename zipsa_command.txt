@@ -31,6 +31,8 @@ rosrun living_lab_robot_moveit_client test_pose_constraints.py base_link 0.8 0.0
 make arm home position
 rosrun living_lab_robot_moveit_client test_named_pose.py home
 rosrun living_lab_robot_moveit_client test_named_pose.py grasp_ready
+rosrun living_lab_robot_moveit_client test_named_pose.py grasp_done
+rosrun living_lab_robot_moveit_client test_named_pose.py ready_put
 
 
 * Obstacle add/del
@@ -83,6 +85,7 @@ rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_table'"
 rostopic pub -1 /del_all_obstacles std_msgs/String "data: '1'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'go_home'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'finish_demo'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'elevation_down'"
 
 
 rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 1.04 -0.1266 1.012

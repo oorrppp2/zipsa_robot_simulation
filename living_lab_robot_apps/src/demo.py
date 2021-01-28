@@ -361,16 +361,33 @@ def create_root():
     elevation_up_mention1 = Print_message(name="* Elevation_up *")
 
 #			Elevation_up : desired elevation position = current position + target_pose
+    elevation_up_10cm_action = Elevation_up(target_pose=0.1)
+    elevation_down_10cm_action = Elevation_up(target_pose=-0.1)
 
     elevation_up.add_children(
         [wait_elevation_up,
          elevation_up_mention1,
-         elevation_up_action,
+         elevation_up_10cm_action,
          done_scene,
          ]
     )
 
-    root.add_children([gripper_open_cmd, intro, find_target, arm_control, grasp_object, finish_demo, put_object, elevation_up])
+    elevation_down = py_trees.composites.Sequence("Elevation_down")
+    wait_elevation_down = py_trees_ros.subscribers.CheckData(name="wait_elevation_down", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="elevation_down")
+    elevation_down_mention1 = Print_message(name="* Elevation_down *")
+
+#			Elevation_up : desired elevation position = current position + target_pose
+
+    elevation_down.add_children(
+        [wait_elevation_down,
+         elevation_down_mention1,
+         elevation_down_10cm_action,
+         done_scene,
+         ]
+    )
+
+    root.add_children([gripper_open_cmd, intro, find_target, arm_control, grasp_object, finish_demo, put_object, elevation_up, elevation_down])
     # root.add_children([scene1, scene3, scene4, scene5, scene6, scene7])
     return root
 
