@@ -138,6 +138,7 @@ def create_root():
     )
 
     arm_pull_out = Fold_arm("Pull out", 0)
+    done_scene_1 = Publish(topic_name="/wait_done_scene", data="scene_1_done")
 
     intro.add_children(
         [wait_intro,
@@ -146,7 +147,7 @@ def create_root():
          # scene1_say2,
          order_object,
          # scene1_say2,
-         done_scene,
+         done_scene_1,
          ]
     )
 
@@ -208,6 +209,7 @@ def create_root():
         action_spec=ObjectDetectAction,
         action_goal=ObjectDetectGoal()
     )
+    done_scene_2 = Publish(topic_name="/wait_done_scene", data="scene_2_done")
 
     find_target.add_children(
         [wait_find_target,
@@ -215,7 +217,7 @@ def create_root():
          find_object,   # + Add obstacle
          wait_time1,
          wait_time1,
-         done_scene,
+         done_scene_2,
          ]
     )
 
@@ -260,6 +262,7 @@ def create_root():
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
 			'elevation_joint':[-0.05, 0.0, 0.35]}
     )
+    done_scene_3 = Publish(topic_name="/wait_done_scene", data="scene_3_done")
 
     arm_control.add_children(
         [wait_arm_control,
@@ -271,7 +274,7 @@ def create_root():
          wait_time1,
          move_manipulator_to_grasp,
          #move_manipulator_to_grasp_ready,
-         done_scene,
+         done_scene_3,
          ]
     )
 
@@ -286,6 +289,7 @@ def create_root():
     grasp_object_mention1 = Print_message(name="* Closing the gripper *")
 
     elevation_up_action = Elevation_up(target_pose=0.05)
+    done_scene_4 = Publish(topic_name="/wait_done_scene", data="scene_4_done")
 
     grasp_object.add_children(
         [wait_grasp_object,
@@ -296,7 +300,7 @@ def create_root():
          wait_time1,
          move_manipulator_to_grasp_done,
          publish_resume_request,
-         done_scene,
+         done_scene_4,
          ]
     )
 
@@ -324,6 +328,7 @@ def create_root():
         mode="put"
     )
     elevation_down_action = Elevation_up(target_pose=-0.07)
+    done_scene_5 = Publish(topic_name="/wait_done_scene", data="scene_5_done")
 
     put_object.add_children(
         [wait_put_object,
@@ -336,7 +341,7 @@ def create_root():
          wait_time1,
          gripper_open,
          move_manipulator_to_home,
-         done_scene,
+         done_scene_5,
          ]
     )
 
