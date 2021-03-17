@@ -3,10 +3,11 @@
     <include file="$(find living_lab_robot_control)/launch/bringup_gazebo.launch"/>
 
     <include file="$(find living_lab_robot_moveit_config)/launch/move_group_gazebo.launch"/>
+    <node name="moveit_client_node" type="moveit_client_node_obstacle_avoidance.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/>
 
     <include file="$(find rgbd_launch)/launch/kinect_frames.launch"/>
 
-    <include file="$(find living_lab_robot_navigation)/launch/navigation.launch"/>
+    <!--include file="$(find living_lab_robot_navigation)/launch/navigation_gazebo.launch"/-->
 
     <!-- Topic Throttle for Point Cloud -->
     <node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/removed_object_points 2.0 /throttled_depth_registered_points"/>
