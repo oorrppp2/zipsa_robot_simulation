@@ -16,7 +16,7 @@ It has only one way at this time (build from source in Catkin workspace) to inst
 ### Retrive the sources
 
     $ cd $HOME/catkin_ws/src
-    $ git clone https://github.com/byeongkyu/living_lab_robot_v2
+    $ git clone https://github.com/oorrppp2/zipsa_robot_simulation.git
 
 ### Install Dependencies (Intel realsense)
     $ sudo apt-key adv --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
