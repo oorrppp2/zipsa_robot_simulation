@@ -4,8 +4,8 @@ It has only one way at this time (build from source in Catkin workspace) to inst
 
 ## Prerequisites
 
-* Ubuntu 16.04.6 LTS
-* ROS Kinetic Kame
+* Ubuntu 18.04.6 LTS
+* ROS Melodic Morenia
 * (Optional) Nvidia GPU Driver
 * realsense D435 driver [link](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#installing-the-packages)
 * pip: `$ sudo apt install python-pip`
