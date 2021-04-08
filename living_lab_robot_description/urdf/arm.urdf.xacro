@@ -211,8 +211,4 @@
     </joint>
     <xacro:insert_position_transmission name="arm6_joint" />
 
-    <xacro:sensor_d435 parent="head_tilt_unit">
-        <origin xyz="0.0172 0 0.0185" rpy="0 0 0"/>
-    </xacro:sensor_d435>
-    <xacro:insert_rgbd_camera_sensor name="camera"/>
 </robot>
