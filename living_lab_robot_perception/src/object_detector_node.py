@@ -140,7 +140,6 @@ class ObjectDetectServer:
         self.detect_done = False
 
         detect_pose = TF2PoseStamped()
-        #print("type : ", detect_pose)
         detect_pose.header.frame_id = "object_coordinate"
 #        detect_pose.header.stamp = rospy.Time.now()
         detect_pose.pose.position.x = self.detected_object.point.x
@@ -179,27 +178,14 @@ class ObjectDetectServer:
                 self.clear_target_region = True
 
         if self.clear_target_region:
-                # Obstacle add into detected object region.
-                print("Obstacle add into detected object region.")
-                pub = rospy.Publisher("/add_obstacle", String, queue_size=1)
-                rospy.sleep(0.4)
-                pub.publish(data=str(result_pose.pose.position.x) + ' ' + \
-                                        str(result_pose.pose.position.y) + ' ' + \
-                                        str(result_pose.pose.position.z) + ' ' + \
-                                        str(self.result_data) + ' ' + ' 0.5 0.5 0.5')
                 rospy.sleep(2.0)
-                # Remove target region points to clearing.
+                # Obstacle add into detected object region.
+                print("Clearing octomap...")
+                self.clear_octomap()
                 print("Remove target region points to clearing.")
                 pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
                 rospy.sleep(0.4)
                 pub.publish(data="remove")
-                rospy.sleep(4.0)
-                # Remove added obstacle to clear the target region.
-                print("Remove added obstacle to clear the target region.")
-                pub = rospy.Publisher("/del_all_obstacles", String, queue_size=1)
-                rospy.sleep(0.4)
-                pub.publish(data='1')
-                # rospy.sleep(1.0)
 
 if __name__ == '__main__':
     rospy.init_node('object_detect_server')

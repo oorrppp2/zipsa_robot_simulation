@@ -56,6 +56,7 @@ class Publish(py_trees.behaviour.Behaviour):
         rospy.sleep(1.0)
         return py_trees.common.Status.SUCCESS
 
+
 class Elevation_up(py_trees.behaviour.Behaviour):
 #class Elevation_up(py_trees_ros.actions.ActionClient):
 	def __init__(self, name="Elevation_up", target_pose=0.0):
@@ -64,8 +65,6 @@ class Elevation_up(py_trees.behaviour.Behaviour):
 		self.name = name
 		self.client = actionlib.SimpleActionClient('/arm_controller/follow_joint_trajectory', FollowJointTrajectoryAction)
 		self.client.wait_for_server()
-#		self.action_goal.trajectory.header.stamp = rospy.Time.now()
-#		self.action_goal.goal_time_tolerance = rospy.Duration(30.0)
 
 	def setup(self, timeout):
 		return True

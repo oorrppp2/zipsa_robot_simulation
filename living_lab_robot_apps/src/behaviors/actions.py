@@ -142,6 +142,9 @@ class ObjectDetectionActionClient(py_trees.behaviour.Behaviour):
             self.done_publisher.publish('done')
             return py_trees.Status.SUCCESS
         else:
+            self.n_try -= 1
+            if self.n_try == 0:
+                return py_trees.Status.INVALID
             return py_trees.Status.RUNNING
 
     def terminate(self, new_status):
@@ -252,11 +255,6 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
 
                     print("Joint constrained : " + str(joint_constraint))
 
-            # print("<== action goal ==>")
-            # print("Find : " + self.blackboard.frame_id)
-            # print("Goal position : (" + str(self.action_goal.target_pose.pose.position.x)
-            #       + " , " + str(self.action_goal.target_pose.pose.position.y)
-            #       + " , " + str(self.action_goal.target_pose.pose.position.z) + ") away from /base_footprint")
             print("Goal position : (" + str(self.action_goal.target_pose.pose.position.x)
                   + " , " + str(self.action_goal.target_pose.pose.position.y)
                   + " , " + str(self.action_goal.target_pose.pose.position.z) + ")")
@@ -274,15 +272,7 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
         # Failure case
         if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
                                               actionlib_msgs.GoalStatus.PREEMPTED]:
-            if self.fail_count < 5:
-                self.sent_goal = False
-                self.fail_count += 1
-                print("Action failed. Retry :: " + str(self.fail_count) + " try")
-                return py_trees.Status.RUNNING
-            else:
-                print("Tried ",self.fail_count, " times. Action failed.")
-                self.fail_count = 0
-                return py_trees.Status.FAILURE
+            return py_trees.Status.FAILURE
 
         result = self.action_client.get_result()
 

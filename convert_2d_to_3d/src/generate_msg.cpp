@@ -81,10 +81,10 @@ class ConvertBoundingBoxNode
 
 	void pointcloud_callback(const sensor_msgs::PointCloud2ConstPtr& pointcloud)
 	{
-		if(pause_state) {
-			pointcloud_pub.publish(paused_pcl_cloud);
-			return;
-		}
+		// if(pause_state) {
+		// 	pointcloud_pub.publish(paused_pcl_cloud);
+		// 	return;
+		// }
 //	    printf("Bounding boxes size : %d\n", gBoundingboxes.bounding_boxes.size());
 		pcl::PointCloud<pcl::PointXYZRGB> pcl_cloud;
 		// pcl::PointCloud<pcl::PointXYZRGB>::iterator it;

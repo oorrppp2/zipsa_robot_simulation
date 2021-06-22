@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
 import sys
@@ -102,7 +102,7 @@ class MoveitClientNode:
 			self.scene.remove_world_object(self.box_names_arr[i])
 			print("Remove " + str(self.box_names_arr[i]) + " result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=2, box_name=self.box_names_arr[i])))
 		self.box_names_arr = []
-		
+
 
 	def plan_execute_pose_cb(self, goal):
 		feedback = PlanExecutePoseFeedback()
@@ -180,6 +180,8 @@ class MoveitClientNode:
 
 		rospy.loginfo('Planning named [%s] pose...' % goal.target_name)
 		plan1 = self.group.plan()
+		print("plan1 type : ", type(plan1))
+		print("plan : ", plan1)
 
 		display_trajectory = moveit_msgs.msg.DisplayTrajectory()
 		display_trajectory.trajectory_start = self.robot.get_current_state()

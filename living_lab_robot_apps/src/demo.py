@@ -74,6 +74,9 @@ def create_root():
     head_tilt_down = MoveJoint(name="tilt_down", controller_name="/tilt_controller", command=0.4)
 
 
+    publish_pause_request = Publish(topic_name="/pause_request", data="pause")
+    publish_resume_request = Publish(topic_name="/pause_request", data="resume")
+
     #
     # gripper_open  (gripper_open arm)
     #
@@ -128,21 +131,21 @@ def create_root():
         적절한 멘트
     """
 
-    order_mention1 = Print_message(name="Choose cup / apple / milk")
+    order_mention1 = Print_message(name="Choose cup / cup / milk")
     # scene1_say2 = Say(name="say_request1", text='컵, 사과, 우류 중 어떤것을 가져다 드릴까요?')
-    # order_object = OrderActionClient(
-    #     name="order_target",
-    #     action_namespace="/order_received",
-    #     action_spec=ReceiveTargetAction,
-    #     action_goal=ReceiveTargetGoal()
-    # )
-
     order_object = OrderActionClient(
-        name="order_received",
-        action_namespace="/sst_order_received",
+        name="order_target",
+        action_namespace="/order_received",
         action_spec=ReceiveTargetAction,
         action_goal=ReceiveTargetGoal()
     )
+
+    # order_object = OrderActionClient(
+    #     name="order_received",
+    #     action_namespace="/sst_order_received",
+    #     action_spec=ReceiveTargetAction,
+    #     action_goal=ReceiveTargetGoal()
+    # )
     arm_pull_out = Fold_arm("Pull out", 0)
     done_scene_1 = Publish(topic_name="/wait_done_scene", data="scene_1_done")
 
@@ -158,248 +161,246 @@ def create_root():
     )
 
 
-#    move_to_table = py_trees.composites.Sequence("move_to_table")
-#
-#    wait_move_to_table = py_trees_ros.subscribers.CheckData(name="wait_move_to_table", topic_name="/wait_select_scene", topic_type=String,
-#           variable_name="data", expected_value="move_to_table")
-#
-#    move_to_table_mention1 = Print_message(name="* Move_to_table *")
-#	# coffee table
-#    goal_table = move_base_msgs.msg.MoveBaseGoal()
-#    goal_table.target_pose.header.frame_id = "map"
-#    goal_table.target_pose.header.stamp = rospy.Time.now()
-#
-#	# kitchen table
-#    goal_table.target_pose.pose.position.x = 2.75
-#    goal_table.target_pose.pose.position.y = 2.87
-#
-#    goal_table.target_pose.pose.orientation.x = 0
-#    goal_table.target_pose.pose.orientation.y = 0
-#    goal_table.target_pose.pose.orientation.z = 0.701
-#    goal_table.target_pose.pose.orientation.w = 0.713
-#
-#    move_to_table_action = py_trees_ros.actions.ActionClient(
-#        name="move to table",
-#        action_namespace="/move_base",
-#        action_spec=move_base_msgs.msg.MoveBaseAction,
-#        action_goal=goal_table
-#    )
-#
-#    move_to_table.add_children(
-#        [wait_move_to_table,
-#         move_to_table_mention1,
-#         move_to_table_action,
-#         arm_pull_out,
-#         head_tilt_down,
-#         done_scene,
-#         ]
-#    )
+    move_to_table = py_trees.composites.Sequence("move_to_table")
 
-    #
+    wait_move_to_table = py_trees_ros.subscribers.CheckData(name="wait_move_to_table", topic_name="/wait_select_scene", topic_type=String,
+            variable_name="data", expected_value="move_to_table")
+
+    move_to_table_mention1 = Print_message(name="* Move_to_table *")
+    # coffee table
+    goal_table = move_base_msgs.msg.MoveBaseGoal()
+    goal_table.target_pose.header.frame_id = "map"
+    goal_table.target_pose.header.stamp = rospy.Time.now()
+
+    # kitchen table
+    goal_table.target_pose.pose.position.x = 1.638
+    goal_table.target_pose.pose.position.y = -1.716
+
+    goal_table.target_pose.pose.orientation.x = 0
+    goal_table.target_pose.pose.orientation.y = 0
+    goal_table.target_pose.pose.orientation.z = 0
+    goal_table.target_pose.pose.orientation.w = 1.0
+
+    move_to_table_action = py_trees_ros.actions.ActionClient(
+        name="move to table",
+        action_namespace="/move_base",
+        action_spec=move_base_msgs.msg.MoveBaseAction,
+        action_goal=goal_table
+    )
+
+    move_to_table.add_children(
+        [wait_move_to_table,
+        move_to_table_mention1,
+        move_to_table_action,
+        arm_pull_out,
+        head_tilt_down,
+        done_scene,
+        ]
+    )
+
+    
     # Find_target  (Find object.)
+    
+
+    find_target = py_trees.composites.Sequence("find_target")
+
+    wait_find_target= py_trees_ros.subscribers.CheckData(name="wait_find_target", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="find_target")
+
+#    start_scene3 = Print_message(name="* Scene  *")
+    find_target_mention1 = Print_message(name="Finding target ...")
+    wait_time1 = WaitForTime(name="delay_1s", time=1.0)
+    wait_time05 = WaitForTime(name="delay_0.5s", time=0.5)
+
+    find_object = ObjectDetectionActionClient(
+        name="find_object",
+        action_namespace="/object_detect",
+        action_spec=ObjectDetectAction,
+        action_goal=ObjectDetectGoal()
+    )
+    done_scene_2 = Publish(topic_name="/wait_done_scene", data="scene_2_done")
+
+    find_target.add_children(
+        [wait_find_target,
+         find_target_mention1,
+         publish_resume_request,
+         find_object,
+         publish_resume_request,
+         find_object,
+         done_scene_2,
+         ]
+    )
+
+    #
+    # Arm_control  (Move arm to the target object to grasp it.)
     #
 
-#     find_target = py_trees.composites.Sequence("find_target")
+    arm_control = py_trees.composites.Sequence("arm_control")
+    wait_arm_control = py_trees_ros.subscribers.CheckData(name="wait_arm_control", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="arm_control")
+    arm_control_mention1 = Print_message(name="* Arm_control *")
 
-#     wait_find_target= py_trees_ros.subscribers.CheckData(name="wait_find_target", topic_name="/wait_select_scene", topic_type=String,
-#            variable_name="data", expected_value="find_target")
+    move_manipulator_to_grasp_add_offset = GraspActionClient(
+        name="move_manipulator_to_grasp",
+        action_namespace="/plan_and_execute_pose_w_joint_constraints",
+        action_spec=PlanExecutePoseConstraintsAction,
+        action_goal=PlanExecutePoseConstraintsGoal(),
+        x_offset=-0.05,
+        y_offset=0.05,
+        z_offset=0.05,
+        constraint=True,
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[-0.05, 0.0, 0.35]}
+#        joint=["arm1_joint", "arm6_joint"]
+    )
+    move_manipulator_to_grasp = GraspActionClient(
+        name="move_manipulator_to_grasp",
+        action_namespace="/plan_and_execute_pose_w_joint_constraints",
+        action_spec=PlanExecutePoseConstraintsAction,
+        action_goal=PlanExecutePoseConstraintsGoal(),
+        x_offset=0.03,
+        y_offset=0.05,
+        z_offset=-0.01,
+        constraint=True,
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[-0.05, 0.0, 0.35]}
+    )
+    done_scene_3 = Publish(topic_name="/wait_done_scene", data="scene_3_done")
 
-# #    start_scene3 = Print_message(name="* Scene  *")
-#     find_target_mention1 = Print_message(name="Finding target ...")
-#     wait_time1 = WaitForTime(name="delay_1s", time=1.0)
-#     wait_time05 = WaitForTime(name="delay_0.5s", time=0.5)
+    arm_control.add_children(
+        [wait_arm_control,
+         arm_control_mention1,
+         publish_pause_request,
+         # find_object,
+         move_manipulator_to_grasp_add_offset,
+         wait_time1,
+         wait_time1,
+         move_manipulator_to_grasp,
+         #move_manipulator_to_grasp_ready,
+         done_scene_3,
+         ]
+    )
 
-#     find_object = ObjectDetectionActionClient(
-#         name="find_object",
-#         action_namespace="/object_detect",
-#         action_spec=ObjectDetectAction,
-#         action_goal=ObjectDetectGoal()
-#     )
-#     done_scene_2 = Publish(topic_name="/wait_done_scene", data="scene_2_done")
+    #
+    # Grasp the object.  (Gripper close and arm position into 'grasp_done')
+    #
+    grasp_object = py_trees.composites.Sequence("grasp_object")
 
-#     find_target.add_children(
-#         [wait_find_target,
-#          find_target_mention1,
-#          find_object,   # + Add obstacle
-#          wait_time1,
-#          wait_time1,
-#          done_scene_2,
-#          ]
-#     )
+    wait_grasp_object = py_trees_ros.subscribers.CheckData(name="wait_grasp_object", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="grasp_object")
 
-#     #
-#     # Arm_control  (Move arm to the target object to grasp it.)
-#     #
+    grasp_object_mention1 = Print_message(name="* Closing the gripper *")
 
-#     arm_control = py_trees.composites.Sequence("arm_control")
-#     wait_arm_control = py_trees_ros.subscribers.CheckData(name="wait_arm_control", topic_name="/wait_select_scene", topic_type=String,
-#            variable_name="data", expected_value="arm_control")
-#     arm_control_mention1 = Print_message(name="* Arm_control *")
+    elevation_up_action = Elevation_up(target_pose=0.05)
+    done_scene_4 = Publish(topic_name="/wait_done_scene", data="scene_4_done")
 
-#     publish_pause_request = Publish(topic_name="/pause_request", data="pause")
-#     publish_resume_request = Publish(topic_name="/pause_request", data="resume")
+    grasp_object.add_children(
+        [wait_grasp_object,
+         grasp_object_mention1,
+         gripper_close,
+         wait_time1,
+         elevation_up_action,
+         wait_time1,
+         move_manipulator_to_grasp_done,
+         publish_resume_request,
+         done_scene_4,
+         ]
+    )
 
-#     move_manipulator_to_grasp_add_offset = GraspActionClient(
-#         name="move_manipulator_to_grasp",
-#         action_namespace="/plan_and_execute_pose_w_joint_constraints",
-#         action_spec=PlanExecutePoseConstraintsAction,
-#         action_goal=PlanExecutePoseConstraintsGoal(),
-#         x_offset=-0.05,
-#         y_offset=0,
-#         z_offset=0.05,
-#         constraint=True,
-#         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
-# 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
-# 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-# 			'elevation_joint':[-0.05, 0.0, 0.35]}
-# #        joint=["arm1_joint", "arm6_joint"]
-#     )
-#     move_manipulator_to_grasp = GraspActionClient(
-#         name="move_manipulator_to_grasp",
-#         action_namespace="/plan_and_execute_pose_w_joint_constraints",
-#         action_spec=PlanExecutePoseConstraintsAction,
-#         action_goal=PlanExecutePoseConstraintsGoal(),
-#         x_offset=0.03,
-#         y_offset=0,
-#         z_offset=-0.01,
-#         constraint=True,
-#         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
-# 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
-# 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-# 			'elevation_joint':[-0.05, 0.0, 0.35]}
-#     )
-#     done_scene_3 = Publish(topic_name="/wait_done_scene", data="scene_3_done")
+    #
+    # Put the object down. 
+    #
+    put_object = py_trees.composites.Sequence("put_object")
 
-#     arm_control.add_children(
-#         [wait_arm_control,
-#          arm_control_mention1,
-#          publish_pause_request,
-#          # find_object,
-#          move_manipulator_to_grasp_add_offset,
-#          wait_time1,
-#          wait_time1,
-#          move_manipulator_to_grasp,
-#          #move_manipulator_to_grasp_ready,
-#          done_scene_3,
-#          ]
-#     )
+    wait_put_object = py_trees_ros.subscribers.CheckData(name="wait_put_object", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="put_object")
 
-#     #
-#     # Grasp the object.  (Gripper close and arm position into 'grasp_done')
-#     #
-#     grasp_object = py_trees.composites.Sequence("grasp_object")
+    put_object_mention1 = Print_message(name="* Putting down the object*")
 
-#     wait_grasp_object = py_trees_ros.subscribers.CheckData(name="wait_grasp_object", topic_name="/wait_select_scene", topic_type=String,
-#         variable_name="data", expected_value="grasp_object")
+    move_manipulator_to_put_down = GraspActionClient(
+        name="move_manipulator_to_grasp",
+        action_namespace="/plan_and_execute_pose_w_joint_constraints",
+        action_spec=PlanExecutePoseConstraintsAction,
+        action_goal=PlanExecutePoseConstraintsGoal(),
+        constraint=True,
+        x_offset=0,
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[-0.05, 0.0, 0.35]},
+        mode="put"
+    )
+    elevation_down_action = Elevation_up(target_pose=-0.07)
+    done_scene_5 = Publish(topic_name="/wait_done_scene", data="scene_5_done")
 
-#     grasp_object_mention1 = Print_message(name="* Closing the gripper *")
+    put_object.add_children(
+        [wait_put_object,
+         put_object_mention1,
+         move_manipulator_to_put_down,
+         wait_time1,
+         wait_time1,
+         elevation_down_action,
+         wait_time1,
+         wait_time1,
+         gripper_open,
+         move_manipulator_to_home,
+         done_scene_5,
+         ]
+    )
 
-#     elevation_up_action = Elevation_up(target_pose=0.05)
-#     done_scene_4 = Publish(topic_name="/wait_done_scene", data="scene_4_done")
+    finish_demo = py_trees.composites.Sequence("finish_demo")
+    wait_finish_demo = py_trees_ros.subscribers.CheckData(name="wait_finish_demo", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="finish_demo")
+    finish_demo_mention1 = Print_message(name="* Finish_demo *")
 
-#     grasp_object.add_children(
-#         [wait_grasp_object,
-#          grasp_object_mention1,
-#          gripper_close,
-#          wait_time1,
-#          elevation_up_action,
-#          wait_time1,
-#          move_manipulator_to_grasp_done,
-#          publish_resume_request,
-#          done_scene_4,
-#          ]
-#     )
+    finish_demo.add_children(
+        [wait_finish_demo,
+         finish_demo_mention1,
+         head_tilt_down,
+         move_manipulator_to_home,
+         arm_put_in,
+         done_scene,
+         ]
+    )
 
-#     #
-#     # Put the object down. 
-#     #
-#     put_object = py_trees.composites.Sequence("put_object")
+    elevation_up = py_trees.composites.Sequence("Elevation_up")
+    wait_elevation_up = py_trees_ros.subscribers.CheckData(name="wait_elevation_up", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="elevation_up")
+    elevation_up_mention1 = Print_message(name="* Elevation_up *")
 
-#     wait_put_object = py_trees_ros.subscribers.CheckData(name="wait_put_object", topic_name="/wait_select_scene", topic_type=String,
-#         variable_name="data", expected_value="put_object")
+#			Elevation_up : desired elevation position = current position + target_pose
+    elevation_up_10cm_action = Elevation_up(target_pose=0.1)
+    elevation_down_10cm_action = Elevation_up(target_pose=-0.1)
 
-#     put_object_mention1 = Print_message(name="* Putting down the object*")
+    elevation_up.add_children(
+        [wait_elevation_up,
+         elevation_up_mention1,
+         elevation_up_10cm_action,
+         done_scene,
+         ]
+    )
 
-#     move_manipulator_to_put_down = GraspActionClient(
-#         name="move_manipulator_to_grasp",
-#         action_namespace="/plan_and_execute_pose_w_joint_constraints",
-#         action_spec=PlanExecutePoseConstraintsAction,
-#         action_goal=PlanExecutePoseConstraintsGoal(),
-#         constraint=True,
-#         x_offset=0,
-#         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
-# 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
-# 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-# 			'elevation_joint':[-0.05, 0.0, 0.35]},
-#         mode="put"
-#     )
-#     elevation_down_action = Elevation_up(target_pose=-0.07)
-#     done_scene_5 = Publish(topic_name="/wait_done_scene", data="scene_5_done")
+    elevation_down = py_trees.composites.Sequence("Elevation_down")
+    wait_elevation_down = py_trees_ros.subscribers.CheckData(name="wait_elevation_down", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="elevation_down")
+    elevation_down_mention1 = Print_message(name="* Elevation_down *")
 
-#     put_object.add_children(
-#         [wait_put_object,
-#          put_object_mention1,
-#          move_manipulator_to_put_down,
-#          wait_time1,
-#          wait_time1,
-#          elevation_down_action,
-#          wait_time1,
-#          wait_time1,
-#          gripper_open,
-#          move_manipulator_to_home,
-#          done_scene_5,
-#          ]
-#     )
+#			Elevation_up : desired elevation position = current position + target_pose
 
-#     finish_demo = py_trees.composites.Sequence("finish_demo")
-#     wait_finish_demo = py_trees_ros.subscribers.CheckData(name="wait_finish_demo", topic_name="/wait_select_scene", topic_type=String,
-#            variable_name="data", expected_value="finish_demo")
-#     finish_demo_mention1 = Print_message(name="* Finish_demo *")
+    elevation_down.add_children(
+        [wait_elevation_down,
+         elevation_down_mention1,
+         elevation_down_10cm_action,
+         done_scene,
+         ]
+    )
 
-#     finish_demo.add_children(
-#         [wait_finish_demo,
-#          finish_demo_mention1,
-#          head_tilt_down,
-#          move_manipulator_to_home,
-#          arm_put_in,
-#          done_scene,
-#          ]
-#     )
-
-#     elevation_up = py_trees.composites.Sequence("Elevation_up")
-#     wait_elevation_up = py_trees_ros.subscribers.CheckData(name="wait_elevation_up", topic_name="/wait_select_scene", topic_type=String,
-#            variable_name="data", expected_value="elevation_up")
-#     elevation_up_mention1 = Print_message(name="* Elevation_up *")
-
-# #			Elevation_up : desired elevation position = current position + target_pose
-#     elevation_up_10cm_action = Elevation_up(target_pose=0.1)
-#     elevation_down_10cm_action = Elevation_up(target_pose=-0.1)
-
-#     elevation_up.add_children(
-#         [wait_elevation_up,
-#          elevation_up_mention1,
-#          elevation_up_10cm_action,
-#          done_scene,
-#          ]
-#     )
-
-#     elevation_down = py_trees.composites.Sequence("Elevation_down")
-#     wait_elevation_down = py_trees_ros.subscribers.CheckData(name="wait_elevation_down", topic_name="/wait_select_scene", topic_type=String,
-#            variable_name="data", expected_value="elevation_down")
-#     elevation_down_mention1 = Print_message(name="* Elevation_down *")
-
-# #			Elevation_up : desired elevation position = current position + target_pose
-
-#     elevation_down.add_children(
-#         [wait_elevation_down,
-#          elevation_down_mention1,
-#          elevation_down_10cm_action,
-#          done_scene,
-#          ]
-#     )
-
-    # root.add_children([gripper_open_cmd, intro, find_target, arm_control, grasp_object, finish_demo, put_object, elevation_up, elevation_down])
-    root.add_children([intro])
+    root.add_children([gripper_open_cmd, intro, move_to_table, find_target, arm_control, grasp_object, finish_demo, put_object, elevation_up, elevation_down])
+    # root.add_children([intro])
     return root
 
 def shutdown(behaviour_tree):
