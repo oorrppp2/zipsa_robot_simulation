@@ -36,6 +36,7 @@ class QRCodeDetectServer:
         rospy.loginfo('[%s] initialized...'%rospy.get_name())
 
     def handle_detector_result(self, msg):
+        # print(msg)
         if not self.start_detect:
             return
 
@@ -55,6 +56,7 @@ class QRCodeDetectServer:
         feedback = QRCodeDetectFeedback()
         result = QRCodeDetectResult()
         success = True
+        print("Action request!")
 
         self.result_pose = np.array([0.0, 0.0, 0.0])
         self.start_detect = True
@@ -64,7 +66,7 @@ class QRCodeDetectServer:
         self.detect_done = False
 
         detect_pose = TF2PoseStamped()
-        detect_pose.header.frame_id = self.result_frame_id
+        detect_pose.header.frame_id = "qrcode_0"
         #detect_pose.header.stamp = rospy.Time.now()
         detect_pose.pose.position.x = self.result_pose[0]
         detect_pose.pose.position.y = self.result_pose[1]
@@ -80,6 +82,8 @@ class QRCodeDetectServer:
 
         # convert detect_pose with reference base_footprint
         target_detect_pose = self.tf_buffer.transform(detect_pose, "base_footprint")
+        print(target_detect_pose)
+        
         target_detect_pose.pose.position.z -= 0.090
 
         result_pose = PoseStamped()
@@ -96,6 +100,7 @@ class QRCodeDetectServer:
             result.code_data = self.result_code_data
             result.pose = result_pose
             self.server.set_succeeded(result)
+            print(result)
 
 
 if __name__ == '__main__':

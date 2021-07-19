@@ -26,9 +26,7 @@ class ObjectDetectServer:
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
         self.start_detect = False
-        self.detect_count = 0
         self.detect_done = False
-	self.detected_pose = np.array([0.0, 0.0, 0.0])
 
         self.result_pose = np.array([0.0, 0.0, 0.0])
         self.result_orientation = np.array([0.0, 0.0, 0.0, 0.0])
@@ -40,8 +38,6 @@ class ObjectDetectServer:
         self.sub_detect = rospy.Subscriber('detected_object', Result, self.handle_detector_result)
         self.server = actionlib.SimpleActionServer('object_detect', ObjectDetectAction, self.handle_request_detect, False)
         self.server.start()
-	self.publish_count = 10
-	self.publishing = False
         self.clear_target_region = False
 
         self.clear_buffer_count = 5    # 5개 메시지 무시
@@ -51,64 +47,15 @@ class ObjectDetectServer:
         rospy.loginfo('[%s] initialized...'%rospy.get_name())
 
     def handle_detector_result(self, msg):
-        #print("Detector result!!!")
-	# print(msg)
         if self.start_detect:
                 if self.clear_buffer_count > 0:
                         print("Clearing buffer ...")
                         self.clear_buffer_count -= 1
                         return
-	br = tf2_ros.TransformBroadcaster()
-	t = geometry_msgs.msg.TransformStamped()
-	t.header.stamp = rospy.Time.now()
-	t.header.frame_id = "camera_rgb_optical_frame"
-	t.child_frame_id = "object_coordinate"
-	t.transform.rotation.x = 0
-	t.transform.rotation.y = 0
-	t.transform.rotation.z = 0
-	t.transform.rotation.w = 1
-  	t.transform.translation.x = self.detected_pose[0]
-  	t.transform.translation.y = self.detected_pose[1]
-	t.transform.translation.z = self.detected_pose[2]
-
-	if not self.publishing:
-		if not self.start_detect:
-			br.sendTransform(t)
-			return
-		if msg.data != self.goal:
-			br.sendTransform(t)
-			return
-
-		print("Detection succeed!!")
-		print("Result with (camera coordinate)")
-		print(msg)
-		
-	        self.result_frame_id = msg.data
-		self.detected_pose[0] = msg.pose.pose.position.x
-		self.detected_pose[1] = msg.pose.pose.position.y
-		self.detected_pose[2] = msg.pose.pose.position.z
-		self.publishing = True
-	else:
-		br.sendTransform(t)
-
-		# Publish at least 10 times.
-		if self.publish_count > 0:
-			print("Publishing")
-			self.publish_count = self.publish_count - 1
-#			rospy.sleep(1)
-			return
-		else:
-			print("Publish done")
-			self.publish_count = 10
-			self.publishing = False
-		        self.detect_done = True
 
         self.start_detect = False
         self.clear_buffer_count = 5
 
-#        self.detected_object.point.x = msg.pose.pose.position.x
-#        self.detected_object.point.y = msg.pose.pose.position.y
-#        self.detected_object.point.z = msg.pose.pose.position.z
         self.detected_object.point.x = 0
         self.detected_object.point.y = 0
         self.detected_object.point.z = 0
@@ -116,6 +63,7 @@ class ObjectDetectServer:
             [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z,
              msg.pose.pose.orientation.w])
 
+        self.detect_done = True
 
         # print(self.result_orientation)
 
@@ -126,7 +74,6 @@ class ObjectDetectServer:
         request_target_pub.publish(data=goal.target)
         rospy.sleep(0.4)
 
-        self.detected_pose = np.array([0.0, 0.0, 0.0])
         if goal.target == "":
                 print("Goal target is empty")
                 return
