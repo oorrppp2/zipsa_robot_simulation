@@ -225,8 +225,8 @@ def create_root():
          find_target_mention1,
          publish_resume_request,
          find_object,
-         publish_resume_request,
-         find_object,
+        #  publish_resume_request,
+        #  find_object,
          done_scene_2,
          ]
     )
