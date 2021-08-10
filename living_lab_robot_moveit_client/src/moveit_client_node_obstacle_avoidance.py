@@ -146,7 +146,7 @@ class MoveitClientNode:
 
 		rospy.loginfo('Start moving...')
 		self.group.go(wait=True)
-		rospy.sleep(2.0)
+		# rospy.sleep(2.0)
 
 		rospy.loginfo('Planning goal pose succeeded.')
 		self.action_plan_execute_pose.set_succeeded(result)
@@ -240,11 +240,12 @@ class MoveitClientNode:
 		display_trajectory.trajectory.append(plan1)
 		self.traj_publisher.publish(display_trajectory)
 
-		rospy.sleep(0.5)
+		# rospy.sleep(0.5)
 
 		rospy.loginfo('Start moving...')
 		self.group.go(wait=True)
-		rospy.sleep(2.0)
+		rospy.loginfo('End moving')
+		# rospy.sleep(2.0)
 		self.group.set_path_constraints(None)
 		self.contraints.joint_constraints = []
 

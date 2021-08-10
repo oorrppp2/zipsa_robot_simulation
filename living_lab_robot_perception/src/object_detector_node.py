@@ -70,7 +70,7 @@ class ObjectDetectServer:
     def handle_request_detect(self, goal):
         print("Received goal : " + goal.target)
         request_target_pub = rospy.Publisher("/request_target", String, queue_size=1)
-        rospy.sleep(0.4)
+        # rospy.sleep(0.4)
         request_target_pub.publish(data=goal.target)
         rospy.sleep(0.4)
 

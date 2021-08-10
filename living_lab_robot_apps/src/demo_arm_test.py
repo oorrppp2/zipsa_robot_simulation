@@ -35,8 +35,8 @@ from living_lab_robot_perception.msg import ReceiveTargetAction, ReceiveTargetGo
 global Point_data
 global Point_flag
 
-x_offset = 0.8
-y_offset = 0.5
+x_offset = 0.7
+y_offset = 0.2
 z_offset = 0.7
 
 def create_root():
@@ -81,6 +81,7 @@ def create_root():
     publish_pause_request = Publish(topic_name="/pause_request", data="pause")
     publish_resume_request = Publish(topic_name="/pause_request", data="resume")
 
+    wait_time1 = WaitForTime(name="delay_1s", time=1.0)
     #
     # gripper_open  (gripper_open arm)
     #
@@ -153,11 +154,30 @@ def create_root():
 #        joint=["arm1_joint", "arm6_joint"]
     )
 
+    move_manipulator2 = GraspActionClient(
+        name="move_manipulator",
+        action_namespace="/plan_and_execute_pose_w_joint_constraints",
+        action_spec=PlanExecutePoseConstraintsAction,
+        action_goal=PlanExecutePoseConstraintsGoal(),
+        x_offset=x_offset,
+        y_offset=y_offset + 0.1,
+        z_offset=z_offset,
+        constraint=True,
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[-0.05, 0.0, 0.35]
+			# 'body_rotate_joint':[0.0, 0.0, 0.0]
+            }
+#        joint=["arm1_joint", "arm6_joint"]
+    )
+
     arm_control.add_children(
         [wait_arm_control,
          arm_control_mention1,
-         body_rotate_05,
+        #  body_rotate_05,
          move_manipulator,
+         move_manipulator2
          ]
     )
 
@@ -197,6 +217,47 @@ def create_root():
          move_manipulator2,
          ]
     )
+
+    arm_control3 = py_trees.composites.Sequence("arm_control3")
+    wait_arm_control3 = py_trees_ros.subscribers.CheckData(name="wait_arm_control3", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="arm_control3")
+    arm_control_mention3 = Print_message(name="* Arm_control3 *")
+
+    # elevation_up = Elevation_up(
+    #     target_pose=0.1,
+    #     )
+
+    elevation_down_action = Elevation_up(target_pose=-0.086)
+    elevation_up_action = Elevation_up(target_pose=0.3)
+
+    move_manipulator3 = GraspActionClient(
+        name="move_manipulator",
+        action_namespace="/plan_and_execute_pose_w_joint_constraints",
+        action_spec=PlanExecutePoseConstraintsAction,
+        action_goal=PlanExecutePoseConstraintsGoal(),
+        x_offset=x_offset+0.1,
+        y_offset=0,
+        z_offset=0.5,
+        constraint=True,
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[-0.05, 0.0, 0.35]
+			# 'body_rotate_joint':[0.0, 0.0, 0.0]
+            }
+#        joint=["arm1_joint", "arm6_joint"]
+    )
+
+    arm_control3.add_children(
+        [wait_arm_control3,
+         arm_control_mention3,
+         move_manipulator3,
+         elevation_down_action,
+         gripper_open,
+         elevation_up_action,
+         move_manipulator_to_home,
+         ]
+    )
     #
     # Body_rotate
     #
@@ -214,7 +275,49 @@ def create_root():
         #  body_rotate_05,
          ]
     )
-    root.add_children([arm_control, body_rotate, arm_control2])
+
+    #
+    # Put the object down. 
+    #
+    put_object = py_trees.composites.Sequence("put_object")
+
+    wait_put_object = py_trees_ros.subscribers.CheckData(name="wait_put_object", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="put_object")
+
+    put_object_mention1 = Print_message(name="* Putting down the object*")
+
+    move_manipulator_to_put_down = GraspActionClient(
+        name="move_manipulator_to_grasp",
+        action_namespace="/plan_and_execute_pose_w_joint_constraints",
+        action_spec=PlanExecutePoseConstraintsAction,
+        action_goal=PlanExecutePoseConstraintsGoal(),
+        constraint=True,
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'body_rotate_joint':[0.0, 0.1, 0.1],
+			'elevation_joint':[0.0, 0.0, 0.25]},
+        mode="put"
+    )
+    elevation_down_action = Elevation_up(target_pose=-0.07)
+    done_scene_5 = Publish(topic_name="/wait_done_scene", data="scene_5_done")
+
+    put_object.add_children(
+        [wait_put_object,
+         put_object_mention1,
+         move_manipulator_to_put_down,
+        #  wait_time1,
+        #  wait_time1,
+         elevation_down_action,
+        #  wait_time1,
+        #  wait_time1,
+        #  gripper_open,
+         move_manipulator_to_home,
+         done_scene_5,
+         ]
+    )
+
+    root.add_children([arm_control, body_rotate, arm_control2, arm_control3, put_object])
     return root
 
 def shutdown(behaviour_tree):

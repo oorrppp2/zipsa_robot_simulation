@@ -95,3 +95,8 @@ rosrun tf tf_echo /base_footprint /camera_link
 rostopic pub -1 /remove_object std_msgs/String "data: 'request'"
 rostopic pub -1 /remove_points_request std_msgs/String "data: 'cup'"
 
+
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'arm_control'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'put_object'"
+
+

@@ -82,7 +82,7 @@ class Elevation_up(py_trees.behaviour.Behaviour):
 		joint_positions = resp.position
 
 		goal = FollowJointTrajectoryGoal()
-		print(goal)
+		# print(goal)
 		goal.trajectory.joint_names = list(resp.name)
 
 		point = JointTrajectoryPoint()
@@ -94,7 +94,7 @@ class Elevation_up(py_trees.behaviour.Behaviour):
 		if point.positions[goal.trajectory.joint_names.index('elevation_joint')] > 0:
 			point.positions[goal.trajectory.joint_names.index('elevation_joint')] = 0
 		goal.trajectory.points.append(point)
-		print(goal)
+		# print(goal)
 		point.time_from_start = rospy.Duration(1.0)
 
 		self.client.send_goal(goal)
