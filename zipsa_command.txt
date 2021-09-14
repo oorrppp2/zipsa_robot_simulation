@@ -23,7 +23,7 @@ rostopic echo /move_group/goal/goal/request/goal_constraints
 gripper close/open
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'gripper_close'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'gripper_open'"
-rostopic pub -1 /gripper_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /gripper_controller/command std_msgs/Float64 "data: 1"
 
 joint constraint
 rosrun living_lab_robot_moveit_client test_pose_constraints.py base_link 0.8 0.0 0.45 0 0 0 arm1_joint 0.0 30 30
@@ -33,6 +33,10 @@ rosrun living_lab_robot_moveit_client test_named_pose.py home
 rosrun living_lab_robot_moveit_client test_named_pose.py grasp_ready
 rosrun living_lab_robot_moveit_client test_named_pose.py grasp_done
 rosrun living_lab_robot_moveit_client test_named_pose.py ready_put
+rosrun living_lab_robot_moveit_client test_named_pose.py shake_arm_left
+rosrun living_lab_robot_moveit_client test_named_pose.py shake_arm_right
+rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_ready
+rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_into_cup
 
 
 * Obstacle add/del
@@ -98,5 +102,10 @@ rostopic pub -1 /remove_points_request std_msgs/String "data: 'cup'"
 
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'arm_control'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'put_object'"
+
+
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'shake_arm'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'pour_juice'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grasp_bowl_ready'"
 
 

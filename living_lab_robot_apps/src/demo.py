@@ -43,6 +43,9 @@ def create_root():
     gripper_close = MoveJoint(name="gripper_close", controller_name="/gripper_controller", command=0.0)
     gripper_open = MoveJoint(name="gripper_open", controller_name="/gripper_controller", command=1.0)
 
+    wait_time1 = WaitForTime(name="delay_1s", time=1.0)
+    wait_time05 = WaitForTime(name="delay_0.5s", time=0.5)
+
     goal_grap_ready = PlanExecuteNamedPoseGoal()
     goal_grap_ready.target_name ="grasp_ready"
     move_manipulator_to_grasp_ready = py_trees_ros.actions.ActionClient(
@@ -68,6 +71,51 @@ def create_root():
         action_namespace="/plan_and_execute_named_pose",
         action_spec=PlanExecuteNamedPoseAction,
         action_goal=goal_home
+    )
+
+    shake_arm_left = PlanExecuteNamedPoseGoal()
+    shake_arm_left.target_name ="shake_arm_left"
+    move_manipulator_to_left = py_trees_ros.actions.ActionClient(
+        name="shake_arm_left",
+        action_namespace="/plan_and_execute_named_pose",
+        action_spec=PlanExecuteNamedPoseAction,
+        action_goal=shake_arm_left
+    )
+    
+    shake_arm_right = PlanExecuteNamedPoseGoal()
+    shake_arm_right.target_name ="shake_arm_right"
+    move_manipulator_to_right = py_trees_ros.actions.ActionClient(
+        name="shake_arm_right",
+        action_namespace="/plan_and_execute_named_pose",
+        action_spec=PlanExecuteNamedPoseAction,
+        action_goal=shake_arm_right
+    )
+
+    pour_juice_ready = PlanExecuteNamedPoseGoal()
+    pour_juice_ready.target_name ="pour_juice_ready"
+    move_manipulator_to_pour_juice_ready = py_trees_ros.actions.ActionClient(
+        name="pour_juice_ready",
+        action_namespace="/plan_and_execute_named_pose",
+        action_spec=PlanExecuteNamedPoseAction,
+        action_goal=pour_juice_ready
+    )
+
+    pour_juice_into_cup = PlanExecuteNamedPoseGoal()
+    pour_juice_into_cup.target_name ="pour_juice_into_cup"
+    move_manipulator_to_pour_juice_into_cup = py_trees_ros.actions.ActionClient(
+        name="pour_juice_into_cup",
+        action_namespace="/plan_and_execute_named_pose",
+        action_spec=PlanExecuteNamedPoseAction,
+        action_goal=pour_juice_into_cup
+    )
+
+    grasp_bowl_ready = PlanExecuteNamedPoseGoal()
+    grasp_bowl_ready.target_name ="grasp_bowl_ready"
+    move_manipulator_to_grasp_bowl_ready = py_trees_ros.actions.ActionClient(
+        name="grasp_bowl_ready",
+        action_namespace="/plan_and_execute_named_pose",
+        action_spec=PlanExecuteNamedPoseAction,
+        action_goal=grasp_bowl_ready
     )
 
     head_tilt_up = MoveJoint(name="tilt_up", controller_name="/tilt_controller", command=0.0)
@@ -114,6 +162,51 @@ def create_root():
          done_scene,
          ]
     )
+
+    # Shaking arm
+    shake_arm = py_trees.composites.Sequence("shake_arm")
+
+    wait_shake_arm = py_trees_ros.subscribers.CheckData(name="wait_shake_arm", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="shake_arm")
+
+    shake_arm.add_children(
+        [wait_shake_arm,
+         move_manipulator_to_left,
+         move_manipulator_to_right,
+         move_manipulator_to_left,
+         move_manipulator_to_right,
+         move_manipulator_to_left,
+         move_manipulator_to_right,
+         ]
+    )
+
+    # Pour juice into a cup
+    pour_juice = py_trees.composites.Sequence("pour_juice")
+
+    wait_pour_juice = py_trees_ros.subscribers.CheckData(name="wait_pour_juice", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="pour_juice")
+
+    pour_juice.add_children(
+        [wait_pour_juice,
+         move_manipulator_to_pour_juice_ready,
+        #  wait_time1,
+         move_manipulator_to_pour_juice_into_cup,
+         move_manipulator_to_pour_juice_ready,
+         ]
+    )
+
+    # Pour juice into a cup
+    grasp_bowl_ready = py_trees.composites.Sequence("grasp_bowl_ready")
+
+    wait_grasp_bowl_ready = py_trees_ros.subscribers.CheckData(name="wait_grasp_bowl_ready", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="grasp_bowl_ready")
+
+    grasp_bowl_ready.add_children(
+        [wait_grasp_bowl_ready,
+         move_manipulator_to_grasp_bowl_ready,
+         ]
+    )
+
 
     #
     # intro  (Introduce and choose the object.)
@@ -209,8 +302,6 @@ def create_root():
 
 #    start_scene3 = Print_message(name="* Scene  *")
     find_target_mention1 = Print_message(name="Finding target ...")
-    wait_time1 = WaitForTime(name="delay_1s", time=1.0)
-    wait_time05 = WaitForTime(name="delay_0.5s", time=0.5)
 
     find_object = ObjectDetectionActionClient(
         name="find_object",
@@ -399,7 +490,7 @@ def create_root():
          ]
     )
 
-    root.add_children([gripper_open_cmd, intro, move_to_table, find_target, arm_control, grasp_object, finish_demo, put_object, elevation_up, elevation_down])
+    root.add_children([grasp_bowl_ready, pour_juice, shake_arm, gripper_open_cmd, intro, move_to_table, find_target, arm_control, grasp_object, finish_demo, put_object, elevation_up, elevation_down])
     # root.add_children([intro])
     return root
 

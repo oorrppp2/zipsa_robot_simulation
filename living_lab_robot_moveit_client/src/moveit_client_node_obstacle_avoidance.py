@@ -188,7 +188,7 @@ class MoveitClientNode:
 		display_trajectory.trajectory.append(plan1)
 		self.traj_publisher.publish(display_trajectory)
 
-		rospy.sleep(0.5)
+		# rospy.sleep(0.5)
 
 		rospy.loginfo('Start moving...')
 		self.group.go(wait=True)
