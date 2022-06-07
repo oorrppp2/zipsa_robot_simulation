@@ -13,6 +13,7 @@ tf_echo
 rosrun tf tf_echo /base_footprint /end_effector
 rosrun tf tf_echo /map /base_footprint
 rosrun tf tf_echo /map /object_coordinate
+rosrun tf tf_echo /camera_color_optical_frame /marker_33
 
 goal move_base
 rostopic echo /move_base/goal 
@@ -37,6 +38,7 @@ rosrun living_lab_robot_moveit_client test_named_pose.py shake_arm_left
 rosrun living_lab_robot_moveit_client test_named_pose.py shake_arm_right
 rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_ready
 rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_into_cup
+rosrun living_lab_robot_moveit_client test_named_pose.py grasp_bowl_ready
 
 
 * Obstacle add/del
@@ -108,4 +110,7 @@ rostopic pub -1 /wait_select_scene std_msgs/String "data: 'shake_arm'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'pour_juice'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grasp_bowl_ready'"
 
+rosrun living_lab_robot_moveit_client test_pose_xyz_demo.py base_footprint 0.707 -0.118 0.986
+rosrun living_lab_robot_moveit_client test_pose_xyz_demo.py base_footprint 0.707 -0.118 0.856
 
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'elevation_down'"

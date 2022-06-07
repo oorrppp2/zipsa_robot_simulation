@@ -89,34 +89,34 @@
         <joint name="elevation_joint" value="-0.155" />
     </group_state>
     <group_state name="pour_juice_ready" group="arm">
-        <joint name="arm1_joint" value="-1.5707" />
+        <joint name="arm1_joint" value="-2.01" />
         <joint name="arm2_joint" value="1.05" />
-        <joint name="arm3_joint" value="-1.05" />
-        <joint name="arm4_joint" value="1.5707" />
-        <joint name="arm5_joint" value="0" />
+        <joint name="arm3_joint" value="-1.31" />
+        <joint name="arm4_joint" value="2.01" />
+        <joint name="arm5_joint" value="-0.1" />
         <joint name="arm6_joint" value="0" />
         <joint name="arm_base_joint" value="0" />
         <joint name="body_rotate_joint" value="0" />
         <joint name="elevation_joint" value="0" />
     </group_state>
     <group_state name="pour_juice_into_cup" group="arm">
-        <joint name="arm1_joint" value="-1.5707" />
+        <joint name="arm1_joint" value="-2.01" />
         <joint name="arm2_joint" value="1.05" />
-        <joint name="arm3_joint" value="-1.05" />
-        <joint name="arm4_joint" value="0.52" />
-        <joint name="arm5_joint" value="0" />
+        <joint name="arm3_joint" value="-1.31" />
+        <joint name="arm4_joint" value="1.48" />
+        <joint name="arm5_joint" value="-0.1" />
         <joint name="arm6_joint" value="-1.05" />
         <joint name="arm_base_joint" value="0" />
         <joint name="body_rotate_joint" value="0" />
         <joint name="elevation_joint" value="0" />
     </group_state>
     <group_state name="grasp_bowl_ready" group="arm">
-        <joint name="arm1_joint" value="-2.6135" />
-        <joint name="arm2_joint" value="0.785" />
+        <joint name="arm1_joint" value="-2.79" />
+        <joint name="arm2_joint" value="1.05" />
         <joint name="arm3_joint" value="-0.785" />
-        <joint name="arm4_joint" value="-0.52" />
+        <joint name="arm4_joint" value="-0.35" />
         <joint name="arm5_joint" value="-1.2213" />
-        <joint name="arm6_joint" value="-1.223" />
+        <joint name="arm6_joint" value="1.05" />
         <joint name="arm_base_joint" value="0" />
         <joint name="body_rotate_joint" value="0" />
         <joint name="elevation_joint" value="-0.01" />

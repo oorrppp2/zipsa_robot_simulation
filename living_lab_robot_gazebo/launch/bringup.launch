@@ -7,7 +7,7 @@
 <!--        <arg name="world_name" value="worlds/living_lab_demo.world"/>	-->
 <!--        <arg name="world_name" value="worlds/living_lab.world"/>	-->
 <!--        <arg name="world_name" value="worlds/living_lab_shelf.world"/>	-->
-        <arg name="world_name" value="worlds/living_lab_table.world"/>
+        <arg name="world_name" value="worlds/living_lab_box_75.world"/>
         <arg name="use_sim_time" value="true" />
         <arg name="verbose" value="true"/>
     </include>

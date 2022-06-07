@@ -37,12 +37,14 @@ class MoveitClientNode:
 		is_initialized = False
 		while(not is_initialized):
 			try:
+				# self.group = moveit_commander.MoveGroupCommander("arm", wait_for_servers=1.0)
 				self.group = moveit_commander.MoveGroupCommander("arm")
 				is_initialized = True
 			except RuntimeError:
 				is_initialized = False
 				rospy.sleep(0.5)
 
+		self.group.set_planning_time(1)	# Limit the planning time to a second. (Default : 5 seconds)
 		rospy.loginfo("Initialized...")
 		self.traj_publisher = rospy.Publisher('/move_group/display_planned_path', moveit_msgs.msg.DisplayTrajectory, queue_size=1)
 

@@ -64,6 +64,7 @@ add_action_files(
   FILES
   ObjectDetect.action
   ReceiveTarget.action
+  PoseEstimation.action
 #  QRCodeDetect.action
 )
 

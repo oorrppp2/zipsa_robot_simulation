@@ -195,15 +195,28 @@ def create_root():
          ]
     )
 
-    # Pour juice into a cup
+    # Grasp bowl
     grasp_bowl_ready = py_trees.composites.Sequence("grasp_bowl_ready")
 
     wait_grasp_bowl_ready = py_trees_ros.subscribers.CheckData(name="wait_grasp_bowl_ready", topic_name="/wait_select_scene", topic_type=String,
            variable_name="data", expected_value="grasp_bowl_ready")
 
+    move_manipulator_to_grasp_bowl = GraspBowlActionClient(
+        name="move_manipulator_to_grasp",
+        action_namespace="/plan_and_execute_pose_w_joint_constraints",
+        action_spec=PlanExecutePoseConstraintsAction,
+        action_goal=PlanExecutePoseConstraintsGoal(),
+        x_offset=0.0,
+        y_offset=0.0,
+        z_offset=-0.13,
+        constraint=True,
+        joint={'body_rotate_joint':[0.0, 5 * math.pi / 180.0, 5 * math.pi / 180.0],}
+    )
+
     grasp_bowl_ready.add_children(
         [wait_grasp_bowl_ready,
          move_manipulator_to_grasp_bowl_ready,
+         move_manipulator_to_grasp_bowl,
          ]
     )
 
