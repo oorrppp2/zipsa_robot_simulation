@@ -44,7 +44,7 @@ class MoveitClientNode:
 				is_initialized = False
 				rospy.sleep(0.5)
 
-		self.group.set_planning_time(1)	# Limit the planning time to a second. (Default : 5 seconds)
+		self.group.set_planning_time(20)	# Limit the planning time to a second. (Default : 5 seconds)
 		rospy.loginfo("Initialized...")
 		self.traj_publisher = rospy.Publisher('/move_group/display_planned_path', moveit_msgs.msg.DisplayTrajectory, queue_size=1)
 
