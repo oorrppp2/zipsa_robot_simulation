@@ -21,3 +21,7 @@ ZipSa (Living Lab Robot Version2) meta-package. See the documents in [doc](./doc
 ## Datasheet
 
 1. [Electronic connection](./connection_electronic.md)
+
+
+## 시뮬레이션 실행 커맨드
+```roslaunch living_lab_robot_bringup bringup_gazebo.launch```
